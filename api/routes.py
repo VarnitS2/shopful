@@ -10,7 +10,7 @@ def hello():
     }
 
 @app.route('/api/get/user')
-def get_user():
+def get_user(): 
     return {
         'msg': _db_worker.select_from_user(500)[0]
     }

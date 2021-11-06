@@ -43,14 +43,9 @@ function HomePage() {
 
   return (
     <div className={classes.root}>
-      <h1>THIS IS THE HOME PAGE!</h1>
-      <p>
-        Here we can navigate to creating n order, seeing past orders, and
-        analytics(?) + user settings page
-      </p>
+      <h1>SHOPFUL</h1>
       <Button className={classes.createButton} onClick={createNewOrder}>
-        {" "}
-        CREATE ORDER{" "}
+        CREATE ORDER
       </Button>
       <Button className={classes.pastButton} onClick={viewPastOrder}>
         PAST ORDERS

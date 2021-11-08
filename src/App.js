@@ -6,6 +6,7 @@ import OrderPage from "./pages/OrderPage";
 import UserPage from "./pages/UserPage";
 import AnalyticsPage from "./pages/AnalyticsPage";
 import PastOrdersPage from "./pages/PastOrdersPage";
+import AddItemPage from "./pages/AddItemPage";
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
         <Route path="/settings" element={<UserPage />} />
         <Route path="/past-orders" element={<PastOrdersPage />} />
         <Route path="/analytics" element={<AnalyticsPage />} />
+        <Route path="/add-item" element={<AddItemPage />} />
         <Route path="/" element={<HomePage />} />
       </Routes>
     </Router>

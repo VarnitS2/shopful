@@ -26,30 +26,24 @@ class Worker:
         self._cur.execute('''SHOW TABLES;''')
         return self._cur.fetchall()
 
-    def select_all_items(self) -> list:
-        self._cur.execute('''SELECT * FROM Items;''')
+    def select_all_from_table(self, table) -> list:
+        self._cur.execute('''SELECT * FROM {};'''.format(table))
         return self._cur.fetchall()
 
-    def select_all_markets(self) -> list:
-        self._cur.execute('''SELECT * FROM Markets;''')
+    def select_condition_from_table(self, table, condition, value) -> list:
+        self._cur.execute('''SELECT * FROM {}
+                            WHERE {} = {};'''.format(table, condition, value))
         return self._cur.fetchall()
 
-    def select_all_orders(self) -> list:
-        self._cur.execute('''SELECT * FROM Orders;''')
-        return self._cur.fetchall()
+    def add_to_orders(self, order_id, notes, total_spent, user_id, market_id) -> None:
+        self._cur.execute('''INSERT INTO Orders (order_id, notes, total_spent, user_id, market_id) VALUES
+                            ({}, {}, {}, {}, {})'''.format(order_id, notes, total_spent, user_id, market_id))
+        self._con.commit()
 
-    def select_all_purchases(self) -> list:
-        self._cur.execute('''SELECT * FROM Purchases;''')
-        return self._cur.fetchall()
-    
-    def select_all_users(self) -> list:
-        self._cur.execute('''SELECT * FROM Users;''')
-        return self._cur.fetchall()
-
-    def select_from_user(self, id) -> list:
-        self._cur.execute('''SELECT * FROM Users
-                            WHERE user_id = {};'''.format(id))
-        return self._cur.fetchall()
+    def add_to_purchases(self, purchase_id, order_id, market_id, item_id, price, quantity) -> None:
+        self._cur.execute('''INSERT INTO Purchases VALUES ({}, {}, {}, {}, {}, {})'''
+                            .format(purchase_id, order_id, market_id, item_id, price, quantity))
+        self._con.commit()
 
     # Delete rows from the database 
     def delete_from_users(self, user_id):

@@ -1,15 +1,8 @@
 import React, { useState } from "react";
-import {
-  ListItem,
-  IconButton,
-  ListItemAvatar,
-  Avatar,
-  ListItemText,
-} from "@mui/material";
+import { ListItem, IconButton, ListItemText } from "@mui/material";
 
 import { makeStyles } from "@material-ui/core";
 import DeleteIcon from "@mui/icons-material/Delete";
-import FolderIcon from "@mui/icons-material/Folder";
 
 const useStyles = makeStyles({
   root: {
@@ -17,7 +10,6 @@ const useStyles = makeStyles({
     textAlign: "center",
     alignContent: "space-evenly",
     flexDirection: "column",
-    padding: "30px",
   },
   dateContainer: {
     display: "flex",
@@ -30,7 +22,7 @@ const useStyles = makeStyles({
 // Need PurchaseItem id (in case they delete it)
 // All other attributes
 
-function PurchaseItem() {
+function PurchaseItem(props) {
   const classes = useStyles();
 
   return (
@@ -43,12 +35,10 @@ function PurchaseItem() {
         }
         disablePadding
       >
-        <ListItemAvatar>
-          <Avatar>
-            <FolderIcon />
-          </Avatar>
-        </ListItemAvatar>
-        <ListItemText primary="Single-line item" />
+        <ListItemText primary={props.itemObj.itemName} />
+        <ListItemText primary={props.itemObj.marketName} />
+        <ListItemText primary={props.itemObj.price} />
+        <ListItemText primary={props.itemObj.quantity} />
       </ListItem>
     </div>
   );

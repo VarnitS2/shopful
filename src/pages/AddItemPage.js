@@ -216,6 +216,17 @@ function AddItemPage() {
         <TextField id="outlined" label="Quantity" />
       </div>
 
+      <div className={classes.dateContainer}>
+        <Typography variant="h6">Pick a Market:</Typography>
+        <Autocomplete
+          disablePortal
+          id="combo-box-demo"
+          options={top100Films}
+          sx={{ width: 300 }}
+          renderInput={(params) => <TextField {...params} label="Movie" />}
+        />
+      </div>
+
       <Button>Add Item</Button>
     </div>
   );

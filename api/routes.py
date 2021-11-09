@@ -109,13 +109,12 @@ def update_order() -> Response:
     market_id = request.get_json()['market_id']
     notes = request.get_json()['notes']
     total_spent = request.get_json()['total_spent']
-    user_id = request.get_json()['user_id']
 
     if len(_db_worker.select_condition_from_table('Orders', 'order_id', order_id)) != 1:
         return jsonify(status=400, message='Invalid order_id')
 
     try:
-        _db_worker.update_order(order_id, purchase_date, market_id, notes, total_spent, user_id)
+        _db_worker.update_order(order_id, purchase_date, market_id, notes, total_spent)
     except Exception as e:
         return jsonify(status=400, message=e)
     else:

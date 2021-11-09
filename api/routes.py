@@ -80,7 +80,7 @@ def add_order():
     except Exception as e:
         return jsonify(status=400, message=e)
     else:
-        return jsonify(status=200, message='Order with ID {} added successfully'.format(order_id))
+        return jsonify(status=200, message=(order_id))
 
 @app.route('/api/get/order/id', methods=['POST'])
 def get_order_id():
@@ -96,7 +96,22 @@ def get_order_id():
 # TODO: Implement me
 @app.route('/api/add/purchase', methods=['POST'])
 def add_purchase():
-    pass
+    data = request.get_json()
+    purchase_id = len(_db_worker.select_all_from_table('Purchases'))
+    order_id = data.get("order_id", None)
+    item_id = data.get("item_id", None)
+    price = data.get("price", None)
+    quantity = data.get("quantity", None)
+
+    if (purchase_id and order_id and item_id and price and quantity):
+        try:
+            _db_worker.add_to_purchases(purchase_id, order_id, item_id, price, quantity)
+        except Exception as e:
+            return jsonify(status=400, message=e)
+        else:
+            return jsonify(status=200, message=(order_id))
+    else:
+        return jsonify(status=500, message="Request does not contain all required fields")
 
 # TODO: Implement me
 @app.route('/api/get/purchases', methods=['POST'])

@@ -41,9 +41,9 @@ class Worker:
                             ({}, \'{}\', {}, {}, {})'''.format(order_id, notes, total_spent, user_id, market_id))
         self._con.commit()
 
-    def add_to_purchases(self, purchase_id, order_id, market_id, item_id, price, quantity) -> None:
-        self._cur.execute('''INSERT INTO Purchases VALUES ({}, {}, {}, {}, {}, {})'''
-                            .format(purchase_id, order_id, market_id, item_id, price, quantity))
+    def add_to_purchases(self, purchase_id, order_id, item_id, price, quantity) -> None:
+        self._cur.execute('''INSERT INTO Purchases VALUES ({}, {}, {}, {}, {});'''
+                            .format(purchase_id, order_id, item_id, price, quantity))
         self._con.commit()
 
     # Search the database using a keyword search. Your application should allow the user to input their search keyword and return the result to the interfac
@@ -59,8 +59,9 @@ class Worker:
     # Update records on the database 
     def update_order(self, order_id, purchase_date, market_id, notes, total_spent, user_id) -> None:
         self._cur.execute('''UPDATE Orders
-                            SET purchase_date = {}, market_id = {}, notes = \'{}\', total_spent = {}, user_id = {}, market_id = {}
-                            WHERE order_id = {};'''.format(purchase_date, market_id, notes, total_spent, user_id, order_id))
+                            SET purchase_date = {}, market_id = {}, notes = \'{}\', total_spent = {}, user_id = {}
+                            WHERE order_id = {};'''
+                            .format(purchase_date, market_id, notes, total_spent, user_id, order_id))
         self._con.commit()
 
     # Delete rows from the database 

@@ -24,7 +24,7 @@ def get_table() -> Response:
     if table not in TABLES:
         return jsonify(status=404, message='Provided table does not exist in database')
 
-    tableElems = _db_worker.select_all_from_table(table)[1:]
+    tableElems = _db_worker.select_all_from_table(table)
 
     if table == 'Items':
         tableElemsDict = [{
@@ -69,18 +69,17 @@ def get_table() -> Response:
 
 @app.route('/api/add/order', methods=['POST'])
 def add_order() -> Response:
-    order_id = len(_db_worker.select_all_from_table('Orders'))
     notes = request.get_json()['notes'] if request.get_json()['notes'] else 'NULL'
     total_spent = request.get_json()['total_spent'] if request.get_json()['total_spent'] else 0.0
     user_id = request.get_json()['user_id'] if request.get_json()['user_id'] else 'NULL'
     market_id = request.get_json()['market_id'] if request.get_json()['market_id'] else 'NULL'
 
     try:
-        _db_worker.add_to_orders(order_id, notes, total_spent, user_id, market_id)
+        _db_worker.add_to_orders(notes, total_spent, user_id, market_id)
     except Exception as e:
         return jsonify(status=400, message=e)
     else:
-        return jsonify(status=200, message=order_id)
+        return jsonify(status=200, message=_db_worker.get_last_insert_id('Orders', 'order_id')[0][0])
 
 @app.route('/api/get/order/id', methods=['POST'])
 def get_order_id() -> Response:
@@ -91,14 +90,50 @@ def get_order_id() -> Response:
     except Exception as e:
         return jsonify(status=400, message=e)
     else:
-        return jsonify(status=200, message={
-            'order_id': order[0][0],
-            'purchase_date': order[0][1],
-            'notes': order[0][2],
-            'total_spent': order[0][3],
-            'user_id': order[0][4],
-            'market_id': order[0][5],
-        })
+        if len(order) == 0:
+            return jsonify(status=404, message='Invalid order_id')
+        else:
+            return jsonify(status=200, message={
+                'order_id': order[0][0],
+                'purchase_date': order[0][1],
+                'notes': order[0][2],
+                'total_spent': order[0][3],
+                'user_id': order[0][4],
+                'market_id': order[0][5],
+            })
+
+@app.route('/api/update/order', methods=['POST'])
+def update_order() -> Response:
+    order_id = request.get_json()['order_id']
+    purchase_date = request.get_json()['purchase_date'] if request.get_json()['purchase_date'] else 'CURRENT_TIMESTAMP()'
+    market_id = request.get_json()['market_id']
+    notes = request.get_json()['notes']
+    total_spent = request.get_json()['total_spent']
+    user_id = request.get_json()['user_id']
+
+    if len(_db_worker.select_condition_from_table('Orders', 'order_id', order_id)) != 1:
+        return jsonify(status=400, message='Invalid order_id')
+
+    try:
+        _db_worker.update_order(order_id, purchase_date, market_id, notes, total_spent, user_id)
+    except Exception as e:
+        return jsonify(status=400, message=e)
+    else:
+        return jsonify(status=200, message='Order updated successfully')
+
+@app.route('/api/delete/order', methods=['POST'])
+def delete_order() -> Response:
+    order_id = request.get_json()['order_id']
+
+    if len(_db_worker.select_condition_from_table('Orders', 'order_id', order_id)) != 1:
+        return jsonify(status=400, message='Invalid order_id')
+
+    try:
+        _db_worker.delete_order(order_id)
+    except Exception as e:
+        return jsonify(status=400, message=e)
+    else:
+        return jsonify(status=200, message='Order deleted successfully')
 
 @app.route('/api/add/purchase', methods=['POST'])
 def add_purchase() -> Response:
@@ -112,7 +147,7 @@ def add_purchase() -> Response:
     except Exception as e:
         return jsonify(status=400, message=e)
     else:
-        return jsonify(status=200, message=_db_worker.get_last_purchase_id()[0][0])
+        return jsonify(status=200, message=_db_worker.get_last_insert_id('Purchases', 'purchase_id')[0][0])
 
 @app.route('/api/get/purchases', methods=['POST'])
 def get_purchases() -> Response:

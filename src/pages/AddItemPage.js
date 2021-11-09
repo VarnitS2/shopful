@@ -4,7 +4,7 @@
 //TODO: Display food by category -> search query for category
 //TODO: Specify price, quantity, and market (?)
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Button,
   TextField,
@@ -16,7 +16,7 @@ import {
   Radio,
   FormControlLabel,
 } from "@mui/material";
-
+import { getItems, getMarkets } from "../services/api";
 import { useNavigate } from "react-router-dom";
 import { makeStyles } from "@material-ui/core";
 
@@ -40,6 +40,7 @@ function AddItemPage() {
   const navigate = useNavigate();
 
   const [item, setItem] = React.useState(null);
+  const [itemList, setItemList] = React.useState([]);
 
   const handleItemSelection = (event) => {
     setItem(event.target.value);
@@ -174,6 +175,10 @@ function AddItemPage() {
     { label: "Monty Python and the Holy Grail", year: 1975 },
   ];
 
+  useEffect(() => {
+    getItems().then((tempArray) => setItemList(tempArray));
+  }, []);
+
   return (
     <div className={classes.root}>
       <h1>ADD ITEM</h1>
@@ -183,9 +188,10 @@ function AddItemPage() {
         <Autocomplete
           disablePortal
           id="combo-box-demo"
-          options={top100Films}
+          options={itemList}
           sx={{ width: 300 }}
           onChange={handleItemSelection}
+          getOptionLabel={(option) => option.item_name.toString()}
           renderInput={(params) => <TextField {...params} label="Movie" />}
         />
       </div>

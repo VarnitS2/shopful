@@ -18,7 +18,7 @@ def get_user() -> Response:
     return jsonify(status=200, message=_db_worker.select_condition_from_table('Users', 'user_id', 500)[0])
 
 @app.route('/api/get/table', methods=['POST'])
-def get_table():
+def get_table() -> Response:
     table = request.get_json()['table']
 
     if table not in TABLES:
@@ -68,7 +68,7 @@ def get_table():
     return jsonify(status=200, message=tableElemsDict)
 
 @app.route('/api/add/order', methods=['POST'])
-def add_order():
+def add_order() -> Response:
     order_id = len(_db_worker.select_all_from_table('Orders'))
     notes = request.get_json()['notes'] if request.get_json()['notes'] else 'NULL'
     total_spent = request.get_json()['total_spent'] if request.get_json()['total_spent'] else 0.0
@@ -83,7 +83,7 @@ def add_order():
         return jsonify(status=200, message='Order with ID {} added successfully'.format(order_id))
 
 @app.route('/api/get/order/id', methods=['POST'])
-def get_order_id():
+def get_order_id() -> Response:
     order_id = request.get_json()['order_id']
 
     try:
@@ -93,12 +93,25 @@ def get_order_id():
     else:
         return jsonify(status=200, data=order[0])
 
-# TODO: Implement me
 @app.route('/api/add/purchase', methods=['POST'])
-def add_purchase():
-    pass
+def add_purchase() -> Response:
+    order_id = request.get_json()['order_id']
+    item_id = request.get_json()['item_id']
+    price = request.get_json()['price']
+    quantity = request.get_json()['quantity']
+
+    try:
+        _db_worker.add_to_purchases(order_id, item_id, price, quantity)
+    except Exception as e:
+        return jsonify(status=400, message=e)
+    else:
+        return jsonify(status=200, message='Purchase with ID {} added successfully'.format(_db_worker.get_last_purchase_id()[0][0]))
 
 # TODO: Implement me
 @app.route('/api/get/purchases', methods=['POST'])
-def get_purchases():
+def get_purchases() -> Response:
+    pass
+
+@app.route('/api/delete/purchase', methods=['POST'])
+def delete_purchase() -> Response:
     pass

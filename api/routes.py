@@ -261,6 +261,7 @@ def get_analytics_max_price_per_user() -> Response:
         return jsonify(status=200, message=[{
             'price': purchase[0],
             'item_id': purchase[1],
+            'item_name': _db_worker.select_condition_from_table('Items', 'item_id', purchase[1])[0][1],
             'user_id': purchase[2],
             } for purchase in max_purchases])
 

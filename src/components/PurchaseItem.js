@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { ListItem, IconButton, ListItemText } from "@mui/material";
 import { deletePurchase } from "../services/api";
 import { makeStyles } from "@material-ui/core";
@@ -18,10 +18,6 @@ const useStyles = makeStyles({
     float: "left",
   },
 });
-
-// Should take in parameters specifying a json object
-// Need PurchaseItem id (in case they delete it)
-// All other attributes
 
 function PurchaseItem(props) {
   const classes = useStyles();

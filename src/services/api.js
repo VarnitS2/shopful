@@ -35,6 +35,19 @@ async function postNewOrder() {
   return await response.json();
 }
 
+async function updateOrder(purchase_date, market_id, notes, total_spent) {
+  const response = await fetch(
+    `/api/add/order`,
+    requestOptions("POST", {
+      purchase_date,
+      market_id,
+      notes,
+      total_spent,
+    })
+  );
+  return await response.json();
+}
+
 async function postNewPurchase(order_id, item_id, price, quantity) {
   const response = await fetch(
     `/api/add/purchase`,
@@ -73,4 +86,5 @@ export {
   postNewPurchase,
   getPurchases,
   deletePurchase,
+  updateOrder,
 };

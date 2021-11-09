@@ -19,7 +19,7 @@ import {
   MuiPickersUtilsProvider,
   KeyboardDatePicker,
 } from "@material-ui/pickers";
-import { getMarkets, getPurchases } from "../services/api";
+import { getMarkets, getPurchases, updateOrder } from "../services/api";
 import AddItemPage from "../components/AddItemPage";
 
 const useStyles = makeStyles({
@@ -51,7 +51,6 @@ const useStyles = makeStyles({
 function OrderPage() {
   const { orderId } = useParams();
   const classes = useStyles();
-  const navigate = useNavigate();
 
   const [orderDate, setOrderDate] = useState(new Date());
   const [marketList, setMarketList] = React.useState([]);
@@ -59,6 +58,7 @@ function OrderPage() {
   const [marketId, setMarketId] = React.useState(null);
   const [marketName, setMarketName] = React.useState("");
   const [total, setTotal] = React.useState(0);
+  const [notes, setNotes] = React.useState("");
 
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
@@ -69,6 +69,8 @@ function OrderPage() {
     setOrderDate(date);
   };
 
+  const handleNotesChange = (e) => setNotes(e.target.value);
+
   const handleMarketSelection = (e, val) => {
     if (val) {
       setMarketName(val.market_name);
@@ -76,18 +78,26 @@ function OrderPage() {
     }
   };
 
-  const saveOrder = () => {};
+  const saveOrder = () => {
+    // updateOrder(orderDate, marketId, notes, total)
+    console.log(orderDate, marketId, notes, total);
+  };
 
-  useEffect(async () => {
-    await getPurchases(orderId).then((tempArray) =>
-      setPurchasesList(tempArray.message)
-    );
-    // find the total from the purchases list (?)
+  useEffect(() => {
+    async function getPurchasesData() {
+      await getPurchases(orderId).then((tempArray) =>
+        setPurchasesList(tempArray.message)
+      );
+    }
+    getPurchasesData();
 
-    await getMarkets().then((tempArray) => {
-      setMarketList(tempArray.message);
-    });
-  }, [, open]);
+    async function getMarketsData() {
+      await getMarkets().then((tempArray) => {
+        setMarketList(tempArray.message);
+      });
+    }
+    getMarketsData();
+  }, [open, orderId]);
 
   useEffect(() => {
     var tempVar = 0;
@@ -142,6 +152,7 @@ function OrderPage() {
           disablePortal
           id="combo-box-demo"
           options={marketList}
+          val={marketName}
           sx={{ width: 300 }}
           onChange={handleMarketSelection}
           getOptionLabel={(option) => option.market_name}
@@ -149,7 +160,13 @@ function OrderPage() {
         />
       </div>
 
-      <TextField id="outlined" label="Notes" multiline rows={4} />
+      <TextField
+        id="outlined"
+        label="Notes"
+        multiline
+        rows={4}
+        onChange={handleNotesChange}
+      />
 
       <Button onClick={saveOrder}>Save Order</Button>
     </div>

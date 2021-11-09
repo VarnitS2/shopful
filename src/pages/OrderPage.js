@@ -6,14 +6,11 @@ import {
   Grid,
   Typography,
   ListItem,
-  IconButton,
-  ListItemAvatar,
-  Avatar,
   ListItemText,
   Autocomplete,
 } from "@mui/material";
 import PurchaseItem from "../components/PurchaseItem";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { makeStyles } from "@material-ui/core";
 import DateFnsUtils from "@date-io/date-fns";
 import {
@@ -21,8 +18,6 @@ import {
   KeyboardDatePicker,
 } from "@material-ui/pickers";
 import { getMarkets } from "../services/api";
-import DeleteIcon from "@mui/icons-material/Delete";
-import FolderIcon from "@mui/icons-material/Folder";
 
 const useStyles = makeStyles({
   root: {
@@ -40,6 +35,7 @@ const useStyles = makeStyles({
 });
 
 function OrderPage() {
+  const { orderId } = useParams();
   const classes = useStyles();
   const navigate = useNavigate();
 
@@ -52,7 +48,7 @@ function OrderPage() {
   };
 
   const addItem = () => {
-    navigate(`/add-item`);
+    navigate(`/add-item/${orderId}`);
   };
 
   const handleMarketSelection = (event) => {
@@ -92,7 +88,7 @@ function OrderPage() {
 
   return (
     <div className={classes.root}>
-      <h1>NEW ORDER</h1>
+      <h1>NEW ORDER: {orderId.toString()} </h1>
       <div className={classes.dateContainer}>
         <Typography variant="h6">Pick a Date:</Typography>
         <MuiPickersUtilsProvider utils={DateFnsUtils}>

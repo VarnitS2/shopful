@@ -51,8 +51,9 @@ class Worker:
     # Update records on the database 
     def update_order(self, order_id, purchase_date, market_id, notes, total_spent, user_id) -> None:
         self._cur.execute('''UPDATE Orders
-                            SET purchase_date = {}, market_id = {}, notes = \'{}\', total_spent = {}, user_id = {}, market_id = {}
-                            WHERE order_id = {};'''.format(purchase_date, market_id, notes, total_spent, user_id, order_id))
+                            SET purchase_date = {}, market_id = {}, notes = \'{}\', total_spent = {}, user_id = {}
+                            WHERE order_id = {};'''
+                            .format(purchase_date, market_id, notes, total_spent, user_id, order_id))
         self._con.commit()
 
     def delete_all_orders_for_user(self, user_id) -> None:

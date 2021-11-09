@@ -80,7 +80,7 @@ def add_order() -> Response:
     except Exception as e:
         return jsonify(status=400, message=e)
     else:
-        return jsonify(status=200, message='Order with ID {} added successfully'.format(order_id))
+        return jsonify(status=200, message=(order_id))
 
 @app.route('/api/get/order/id', methods=['POST'])
 def get_order_id() -> Response:
@@ -105,7 +105,7 @@ def add_purchase() -> Response:
     except Exception as e:
         return jsonify(status=400, message=e)
     else:
-        return jsonify(status=200, message='Purchase with ID {} added successfully'.format(_db_worker.get_last_purchase_id()[0][0]))
+        return jsonify(status=200, message=_db_worker.get_last_purchase_id()[0][0])
 
 # TODO: Implement me
 @app.route('/api/get/purchases', methods=['POST'])

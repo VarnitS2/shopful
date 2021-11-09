@@ -16,8 +16,8 @@ import {
   Radio,
   FormControlLabel,
 } from "@mui/material";
-import { getItems } from "../services/api";
-import { useNavigate } from "react-router-dom";
+import { getItems, postNewPurchase } from "../services/api";
+import { useNavigate, useParams } from "react-router-dom";
 import { makeStyles } from "@material-ui/core";
 
 const useStyles = makeStyles({
@@ -36,19 +36,33 @@ const useStyles = makeStyles({
 });
 
 function AddItemPage() {
+  const { orderId } = useParams();
   const classes = useStyles();
   const navigate = useNavigate();
 
-  const [item, setItem] = React.useState(null);
+  const [itemId, setItemId] = React.useState(null);
   const [itemList, setItemList] = React.useState([]);
-  const [marketList, setMarketList] = React.useState([]);
+  const [price, setPrice] = React.useState();
+  const [quantity, setQuantity] = React.useState();
 
-  const handleItemSelection = (event) => {
-    setItem(event.target.value);
+  const handleItemSelection = (e, val) => {
+    if (val) {
+      setItemId(val.item_id);
+    }
+  };
+  const updatePrice = (e) => setPrice(e.target.value);
+  const updateQuantity = (e) => setQuantity(e.target.value);
+
+  const sumbitItem = () => {
+    if (orderId && itemId && price && quantity) {
+      postNewPurchase(orderId, itemId, price, quantity);
+    }
   };
 
   useEffect(() => {
-    getItems().then((tempArray) => setItemList(tempArray.message));
+    getItems().then((tempArray) => {
+      setItemList(tempArray.message);
+    });
   }, []);
 
   return (
@@ -63,7 +77,7 @@ function AddItemPage() {
           options={itemList}
           sx={{ width: 300 }}
           onChange={handleItemSelection}
-          getOptionLabel={(option) => option.item_name.toString()}
+          getOptionLabel={(option) => option.item_name}
           renderInput={(params) => <TextField {...params} label="Item" />}
         />
       </div>
@@ -75,7 +89,7 @@ function AddItemPage() {
         <RadioGroup
           aria-label="gender"
           name="controlled-radio-buttons-group"
-          value={item}
+          value={itemId}
           onChange={handleItemSelection}
         >
           <FormControlLabel value="milk" control={<Radio />} label="Milk" />
@@ -86,15 +100,15 @@ function AddItemPage() {
 
       <div className={classes.dateContainer}>
         <Typography variant="h6">Price:</Typography>
-        <TextField id="outlined" label="Price" />
+        <TextField id="outlined" label="Price" onChange={updatePrice} />
       </div>
 
       <div className={classes.dateContainer}>
         <Typography variant="h6">Quantity:</Typography>
-        <TextField id="outlined" label="Quantity" />
+        <TextField id="outlined" label="Quantity" onChange={updateQuantity} />
       </div>
 
-      <Button>Add Item</Button>
+      <Button onClick={sumbitItem}>Add Item</Button>
     </div>
   );
 }

@@ -80,7 +80,7 @@ def add_order() -> Response:
     except Exception as e:
         return jsonify(status=400, message=e)
     else:
-        return jsonify(status=200, message=(order_id))
+        return jsonify(status=200, message=order_id)
 
 @app.route('/api/get/order/id', methods=['POST'])
 def get_order_id() -> Response:
@@ -91,7 +91,14 @@ def get_order_id() -> Response:
     except Exception as e:
         return jsonify(status=400, message=e)
     else:
-        return jsonify(status=200, data=order[0])
+        return jsonify(status=200, message={
+            'order_id': order[0][0],
+            'purchase_date': order[0][1],
+            'notes': order[0][2],
+            'total_spent': order[0][3],
+            'user_id': order[0][4],
+            'market_id': order[0][5],
+        })
 
 @app.route('/api/add/purchase', methods=['POST'])
 def add_purchase() -> Response:
@@ -107,11 +114,30 @@ def add_purchase() -> Response:
     else:
         return jsonify(status=200, message=_db_worker.get_last_purchase_id()[0][0])
 
-# TODO: Implement me
 @app.route('/api/get/purchases', methods=['POST'])
 def get_purchases() -> Response:
-    pass
+    order_id = request.get_json()['order_id']
+
+    try:
+        purchases = _db_worker.select_condition_from_table('Purchases', 'order_id', order_id)
+    except Exception as e:
+        return jsonify(status=400, message=e)
+    else:
+        return jsonify(status=200, message=[{
+            'purchase_id': purchase[0],
+            'order_id': purchase[1],
+            'item_id': purchase[2],
+            'price': purchase[3],
+            'quantity': purchase[4],
+        } for purchase in purchases])
 
 @app.route('/api/delete/purchase', methods=['POST'])
 def delete_purchase() -> Response:
-    pass
+    purchase_id = request.get_json()['purchase_id']
+
+    try:
+        _db_worker.delete_from_purchases(purchase_id)
+    except Exception as e:
+        return jsonify(status=400, message=e)
+    else:
+        return jsonify(status=200, message='Purchase deleted successfully')

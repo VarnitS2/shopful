@@ -25,7 +25,13 @@ def get_table():
         return jsonify(status=404, message='Provided table does not exist in database')
 
     tableElems = _db_worker.select_all_from_table(table)
-    return jsonify(status=200, message=tableElems)
+    tableElemsDict = [{
+        'item_id': elem[0],
+        'item_name': elem[1],
+        'category': elem[2][:-1]
+    } for elem in tableElems]
+
+    return jsonify(status=200, message=tableElemsDict)
 
 @app.route('/api/add/order', methods=['POST'])
 def add_order():

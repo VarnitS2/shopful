@@ -22,10 +22,7 @@ class Worker:
         self._con = mysql.connector.connect(**self._config)
         self._cur = self._con.cursor()
 
-    def show_tables(self) -> list:
-        self._cur.execute('''SHOW TABLES;''')
-        return self._cur.fetchall()
-
+    # General SELECTs
     def select_all_from_table(self, table) -> list:
         self._cur.execute('''SELECT * FROM {};'''.format(table))
         return self._cur.fetchall()
@@ -39,11 +36,6 @@ class Worker:
     def add_to_orders(self, order_id, notes, total_spent, user_id, market_id) -> None:
         self._cur.execute('''INSERT INTO Orders (order_id, notes, total_spent, user_id, market_id) VALUES
                             ({}, \'{}\', {}, {}, {})'''.format(order_id, notes, total_spent, user_id, market_id))
-        self._con.commit()
-
-    def add_to_purchases(self, purchase_id, order_id, item_id, price, quantity) -> None:
-        self._cur.execute('''INSERT INTO Purchases VALUES ({}, {}, {}, {}, {});'''
-                            .format(purchase_id, order_id, item_id, price, quantity))
         self._con.commit()
 
     # Search the database using a keyword search. Your application should allow the user to input their search keyword and return the result to the interfac
@@ -64,12 +56,6 @@ class Worker:
                             .format(purchase_date, market_id, notes, total_spent, user_id, order_id))
         self._con.commit()
 
-    # Delete rows from the database 
-    def delete_from_users(self, user_id) -> None:
-        self._cur.execute('''DELETE FROM Users
-                            WHERE user_id = {};'''.format(user_id))
-        self._con.commit()
-
     def delete_all_orders_for_user(self, user_id) -> None:
         self._cur.execute('''DELETE FROM Orders
                             WHERE user_id = {};'''.format(user_id))
@@ -85,6 +71,26 @@ class Worker:
         self._cur.execute('''DELETE FROM Orders
                             WHERE user_id = {}
                             AND order_id = {};'''.format(user_id, order_id))
+        self._con.commit()
+
+    def add_to_purchases(self, order_id, item_id, price, quantity) -> None:
+        self._cur.execute('''INSERT INTO Purchases (order_id, item_id, price, quantity) VALUES
+                            ({}, {}, {}, {})'''.format(order_id, item_id, price, quantity))
+        self._con.commit()
+
+    def get_last_purchase_id(self) -> int:
+        self._cur.execute('''SELECT last_insert_id();''')
+        return self._cur.fetchall()
+
+    def delete_from_purchases(self, purchase_id) -> None:
+        self._cur.execute('''DELETE FROM Purchases
+                            WHERE purchase_id = {};'''.format(purchase_id))
+        self._con.commit()
+
+    # Delete rows from the database 
+    def delete_from_users(self, user_id) -> None:
+        self._cur.execute('''DELETE FROM Users
+                            WHERE user_id = {};'''.format(user_id))
         self._con.commit()
 
     # Integrate into your application both of the advanced SQL queries you developed in stage 3

@@ -33,9 +33,9 @@ class Worker:
         return self._cur.fetchall()
 
     # Insert new records (rows) to the database
-    def add_to_orders(self, order_id, notes, total_spent, user_id, market_id) -> None:
-        self._cur.execute('''INSERT INTO Orders (order_id, notes, total_spent, user_id, market_id) VALUES
-                            ({}, \'{}\', {}, {}, {})'''.format(order_id, notes, total_spent, user_id, market_id))
+    def add_to_orders(self, notes, total_spent, user_id, market_id) -> None:
+        self._cur.execute('''INSERT INTO Orders (notes, total_spent, user_id, market_id) VALUES
+                            (\'{}\', {}, {}, {})'''.format(notes, total_spent, user_id, market_id))
         self._con.commit()
 
     # Search the database using a keyword search. Your application should allow the user to input their search keyword and return the result to the interfac
@@ -73,13 +73,18 @@ class Worker:
                             AND order_id = {};'''.format(user_id, order_id))
         self._con.commit()
 
+    def delete_order(self, order_id) -> None:
+        self._cur.execute('''DELETE FROM Orders
+                            WHERE order_id = {};'''.format(order_id))
+        self._con.commit()  
+
     def add_to_purchases(self, order_id, item_id, price, quantity) -> None:
         self._cur.execute('''INSERT INTO Purchases (order_id, item_id, price, quantity) VALUES
                             ({}, {}, {}, {})'''.format(order_id, item_id, price, quantity))
         self._con.commit()
 
-    def get_last_purchase_id(self) -> int:
-        self._cur.execute('''SELECT last_insert_id();''')
+    def get_last_insert_id(self, table, id) -> int:
+        self._cur.execute('''SELECT MAX({}) FROM {};'''.format(id, table))
         return self._cur.fetchall()
 
     def delete_from_purchases(self, purchase_id) -> None:

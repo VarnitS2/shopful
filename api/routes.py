@@ -1,3 +1,4 @@
+import hashlib
 from flask import request
 from flask.json import jsonify
 from flask.wrappers import Response
@@ -12,10 +13,6 @@ TABLES = ['Items', 'Markets', 'Orders', 'Purchases', 'Users']
 @app.route('/api/hello')
 def hello() -> Response:
     return jsonify(status=200, message='Hello, world!')
-
-@app.route('/api/get/user')
-def get_user() -> Response:
-    return jsonify(status=200, message=_db_worker.select_condition_from_table('Users', 'user_id', 500)[0])
 
 @app.route('/api/get/table', methods=['POST'])
 def get_table() -> Response:
@@ -198,3 +195,57 @@ def delete_purchase() -> Response:
         return jsonify(status=400, message=e)
     else:
         return jsonify(status=200, message='Purchase deleted successfully')
+
+@app.route('/api/add/user', methods=['POST'])
+def add_user() -> Response:
+    username = request.get_json()['username']
+    email = request.get_json()['email']
+    user_password = request.get_json()['user_password']
+    age = request.get_json()['age']
+
+    user_password_hashed = hashlib.sha224(user_password.encode('ascii')).hexdigest()
+
+    if len(_db_worker.get_user(email)) > 0:
+        return jsonify(status=400, message='Email already exists in database')
+
+    try:
+        _db_worker.add_to_users(username, email, user_password_hashed, age)
+    except Exception as e:
+        return jsonify(status=400, message=e)
+    else:
+        return jsonify(status=200, message=_db_worker.get_last_insert_id('Users', 'user_id'))
+
+@app.route('/api/get/user', methods=['POST'])
+def get_user() -> Response:
+    email = request.get_json()['email']
+
+    try:
+        user = _db_worker.select_condition_from_table('Users', 'email', email)
+    except Exception as e:
+        return jsonify(status=400, message=e)
+    else:
+        if len(user) == 0:
+            return jsonify(status=404, message='Invalid email')
+        else:
+            return jsonify(status=200, message={
+                'user_id': user[0][0],
+                'username': user[0][1],
+                'email': user[0][3],
+                'age': user[0][4],
+            })
+
+@app.route('/api/login/user', methods=['POST'])
+def login_user() -> Response:
+    email = request.get_json()['email']
+    user_password = request.get_json()['user_password']
+    user_password_hashed = hashlib.sha224(user_password.encode('ascii')).hexdigest()
+
+    try:
+        user = _db_worker.get_user(email)
+    except Exception as e:
+        return jsonify(status=400, message=e)
+    else:
+        if user[0][2] != user_password_hashed:
+            return jsonify(status=400, message='Invalid password')
+        else:
+            return jsonify(status=200, message='Login successful')

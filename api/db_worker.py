@@ -89,6 +89,16 @@ class Worker:
                             WHERE purchase_id = {};'''.format(purchase_id))
         self._con.commit()
 
+    def add_to_users(self, username, email, user_password, age) -> None:
+        self._cur.execute('''INSERT INTO Users (username, user_password, email, age) VALUES
+                            (\'{}\', \'{}\', \'{}\', {})'''.format(username, user_password, email, age))
+        self._con.commit()
+
+    def get_user(self, user_email) -> list:
+        self._cur.execute('''SELECT * FROM Users
+                            WHERE email = \'{}\';'''.format(user_email))
+        return self._cur.fetchall()
+
     # Delete rows from the database 
     def delete_from_users(self, user_id) -> None:
         self._cur.execute('''DELETE FROM Users

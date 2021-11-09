@@ -52,8 +52,8 @@ function AddItemPage(props) {
     }
   };
 
-  useEffect(() => {
-    getItems().then((tempArray) => {
+  useEffect(async () => {
+    await getItems().then((tempArray) => {
       setItemList(tempArray.message);
     });
   }, []);

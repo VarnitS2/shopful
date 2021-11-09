@@ -61,12 +61,23 @@ function OrderPage() {
   const [notes, setNotes] = React.useState("");
 
   const [open, setOpen] = React.useState(false);
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
+  const [closed, setClosed] = React.useState(false);
+
+  const handleOpen = () => {
+    setOpen(true);
+  };
+  const handleClose = () => {
+    setOpen(false);
+    setClosed(!closed);
+  };
 
   const handleDateChange = (date) => {
-    console.log(date);
-    setOrderDate(date);
+    var newdate =
+      date.toISOString().split("T")[0] +
+      " " +
+      date.toTimeString().split(" ")[0];
+    console.log(newdate);
+    setOrderDate(newdate);
   };
 
   const handleNotesChange = (e) => setNotes(e.target.value);
@@ -79,25 +90,18 @@ function OrderPage() {
   };
 
   const saveOrder = () => {
-    // updateOrder(orderId, orderDate, marketId, notes, total)
+    updateOrder(orderId, orderDate, marketId, notes, total);
     console.log(orderDate, marketId, notes, total);
   };
 
-  useEffect(() => {
-    async function getPurchasesData() {
-      await getPurchases(orderId).then((tempArray) =>
-        setPurchasesList(tempArray.message)
-      );
-    }
-    getPurchasesData();
-
-    async function getMarketsData() {
-      await getMarkets().then((tempArray) => {
-        setMarketList(tempArray.message);
-      });
-    }
-    getMarketsData();
-  }, [open, orderId]);
+  useEffect(async () => {
+    await getPurchases(orderId).then((tempArray) =>
+      setPurchasesList(tempArray.message)
+    );
+    await getMarkets().then((tempArray) => {
+      setMarketList(tempArray.message);
+    });
+  }, [closed, orderId]);
 
   useEffect(() => {
     var tempVar = 0;

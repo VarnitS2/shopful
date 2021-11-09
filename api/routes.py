@@ -102,6 +102,29 @@ def get_order_id() -> Response:
                 'market_id': order[0][5],
             })
 
+@app.route('/api/search/order', methods=['POST'])
+def search_orders() -> Response:
+    user_id = request.get_json()['user_id']
+    start_date = request.get_json()['start_date']
+    end_date = request.get_json()['end_date']
+
+    try:
+        orders = _db_worker.get_orders_from_time_period(user_id, start_date, end_date)
+    except Exception as e:
+        return jsonify(status=400, message=e)
+    else:
+        if len(orders) == 0:
+            return jsonify(status=404, message='No orders found for the provided constraints')
+        else:
+            return jsonify(status=200, message=[{
+                'order_id': order[0],
+                'purchase_date': order[1],
+                'notes': order[2],
+                'total_spent': order[3],
+                'user_id': order[4],
+                'market_id': order[5],
+            } for order in orders])
+
 @app.route('/api/update/order', methods=['POST'])
 def update_order() -> Response:
     order_id = request.get_json()['order_id']

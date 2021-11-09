@@ -249,3 +249,18 @@ def login_user() -> Response:
             return jsonify(status=400, message='Invalid password')
         else:
             return jsonify(status=200, message='Login successful')
+            
+@app.route('/api/get/max-price-per-user', methods=['POST'])
+def get_analytics_max_price_per_user() -> Response:
+    try:
+        max_purchases = _db_worker.get_max_price_per_user()
+    except Exception as e:
+        return jsonify(status=400, message=e)
+    else:
+        return jsonify(status=200, message=[{
+            'price': purchase[0],
+            'item_id': purchase[1],
+            'user_id': purchase[2],
+            } for purchase in max_purchases])
+
+

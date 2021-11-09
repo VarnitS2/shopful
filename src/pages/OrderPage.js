@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Button,
   TextField,
@@ -20,6 +20,7 @@ import {
   MuiPickersUtilsProvider,
   KeyboardDatePicker,
 } from "@material-ui/pickers";
+import { getMarkets } from "../services/api";
 import DeleteIcon from "@mui/icons-material/Delete";
 import FolderIcon from "@mui/icons-material/Folder";
 
@@ -43,6 +44,7 @@ function OrderPage() {
   const navigate = useNavigate();
 
   const [orderDate, setOrderDate] = useState(new Date());
+  const [marketList, setMarketList] = React.useState([]);
 
   const handleDateChange = (date) => {
     console.log(date);
@@ -51,6 +53,10 @@ function OrderPage() {
 
   const addItem = () => {
     navigate(`/add-item`);
+  };
+
+  const handleMarketSelection = (event) => {
+    setMarketList(event.target.value);
   };
 
   const tempJsonObj = [
@@ -80,6 +86,10 @@ function OrderPage() {
     },
   ];
 
+  useEffect(() => {
+    getMarkets().then((tempArray) => setMarketList(tempArray.message));
+  }, []);
+
   return (
     <div className={classes.root}>
       <h1>NEW ORDER</h1>
@@ -88,6 +98,19 @@ function OrderPage() {
         <MuiPickersUtilsProvider utils={DateFnsUtils}>
           <KeyboardDatePicker value={orderDate} onChange={handleDateChange} />
         </MuiPickersUtilsProvider>
+      </div>
+
+      <div className={classes.dateContainer}>
+        <Typography variant="h6">Pick a Market:</Typography>
+        <Autocomplete
+          disablePortal
+          id="combo-box-demo"
+          options={marketList}
+          sx={{ width: 300 }}
+          onChange={handleMarketSelection}
+          getOptionLabel={(option) => option.market_name.toString()}
+          renderInput={(params) => <TextField {...params} label="Market" />}
+        />
       </div>
 
       <Grid>

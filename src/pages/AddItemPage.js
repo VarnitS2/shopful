@@ -16,7 +16,7 @@ import {
   Radio,
   FormControlLabel,
 } from "@mui/material";
-import { getItems, getMarkets } from "../services/api";
+import { getItems } from "../services/api";
 import { useNavigate } from "react-router-dom";
 import { makeStyles } from "@material-ui/core";
 
@@ -47,13 +47,8 @@ function AddItemPage() {
     setItem(event.target.value);
   };
 
-  const handleMarketSelection = (event) => {
-    setMarketList(event.target.value);
-  };
-
   useEffect(() => {
     getItems().then((tempArray) => setItemList(tempArray.message));
-    getMarkets().then((tempArray) => setMarketList(tempArray.message));
   }, []);
 
   return (
@@ -97,19 +92,6 @@ function AddItemPage() {
       <div className={classes.dateContainer}>
         <Typography variant="h6">Quantity:</Typography>
         <TextField id="outlined" label="Quantity" />
-      </div>
-
-      <div className={classes.dateContainer}>
-        <Typography variant="h6">Pick a Market:</Typography>
-        <Autocomplete
-          disablePortal
-          id="combo-box-demo"
-          options={marketList}
-          sx={{ width: 300 }}
-          onChange={handleMarketSelection}
-          getOptionLabel={(option) => option.market_name.toString()}
-          renderInput={(params) => <TextField {...params} label="Market" />}
-        />
       </div>
 
       <Button>Add Item</Button>

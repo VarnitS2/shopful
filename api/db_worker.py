@@ -37,12 +37,12 @@ class Worker:
 
     def add_to_orders(self, order_id, notes, total_spent, user_id, market_id) -> None:
         self._cur.execute('''INSERT INTO Orders (order_id, notes, total_spent, user_id, market_id) VALUES
-                            ({}, {}, {}, {}, {})'''.format(order_id, notes, total_spent, user_id, market_id))
+                            ({}, {}, {}, {}, {});'''.format(order_id, notes, total_spent, user_id, market_id))
         self._con.commit()
 
-    def add_to_purchases(self, purchase_id, order_id, market_id, item_id, price, quantity) -> None:
-        self._cur.execute('''INSERT INTO Purchases VALUES ({}, {}, {}, {}, {}, {})'''
-                            .format(purchase_id, order_id, market_id, item_id, price, quantity))
+    def add_to_purchases(self, purchase_id, order_id, item_id, price, quantity) -> None:
+        self._cur.execute('''INSERT INTO Purchases VALUES ({}, {}, {}, {}, {});'''
+                            .format(purchase_id, order_id, item_id, price, quantity))
         self._con.commit()
 
     # Delete rows from the database 
@@ -58,7 +58,7 @@ class Worker:
         self._cur.execute('''DELETE FROM Orders
                             WHERE user_id = {} 
                             AND purchase_date = {};'''.format(user_id, purchase_date))
-
+    
     # Integrate into your application both of the advanced SQL queries you developed in stage 3
     def get_freq_of_item_bought(self) -> list:
         self._cur.execute('''SELECT P.item_id, COUNT(P.item_id) as quantity, O.user_id

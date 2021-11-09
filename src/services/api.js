@@ -8,14 +8,14 @@ function requestOptions(type, info) {
 
 function getItems() {
   return fetch(
-    `api/get/table`,
+    `/api/get/table`,
     requestOptions("POST", { table: "Items" })
   ).then((response) => response.json());
 }
 
 function getMarkets() {
   return fetch(
-    `api/get/table`,
+    `/api/get/table`,
     requestOptions("POST", { table: "Markets" })
   ).then((response) => response.json());
 }
@@ -32,4 +32,16 @@ function postNewOrder() {
   ).then((response) => response.json());
 }
 
-export { getItems, getMarkets, postNewOrder };
+function postNewPurchase(order_id, item_id, price, quantity) {
+  return fetch(
+    `/api/add/purchase`,
+    requestOptions("POST", {
+      order_id,
+      item_id,
+      price,
+      quantity,
+    })
+  ).then((response) => response.json());
+}
+
+export { getItems, getMarkets, postNewOrder, postNewPurchase };

@@ -16,7 +16,7 @@ function App() {
         <Route path="/settings" element={<UserPage />} />
         <Route path="/past-orders" element={<PastOrdersPage />} />
         <Route path="/analytics" element={<AnalyticsPage />} />
-        <Route path="/add-item" element={<AddItemPage />} />
+        <Route path="/add-item/:orderId" element={<AddItemPage />} />
         <Route path="/" element={<HomePage />} />
       </Routes>
     </Router>

@@ -48,7 +48,7 @@ function OrderPage() {
   };
 
   const addItem = () => {
-    navigate(`/add-item`);
+    navigate(`/add-item/${orderId}`);
   };
 
   const handleMarketSelection = (event) => {

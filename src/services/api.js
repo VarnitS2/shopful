@@ -35,10 +35,17 @@ async function postNewOrder() {
   return await response.json();
 }
 
-async function updateOrder(purchase_date, market_id, notes, total_spent) {
+async function updateOrder(
+  order_id,
+  purchase_date,
+  market_id,
+  notes,
+  total_spent
+) {
   const response = await fetch(
-    `/api/add/order`,
+    `/api/update/order`,
     requestOptions("POST", {
+      order_id,
       purchase_date,
       market_id,
       notes,

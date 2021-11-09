@@ -86,6 +86,14 @@ async function deletePurchase(purchase_id) {
   return await response.json();
 }
 
+async function deleteOrder(order_id) {
+  const response = await fetch(
+    `/api/delete/order`,
+    requestOptions("POST", { order_id })
+  );
+  return await response.json();
+}
+
 export {
   getItems,
   getMarkets,
@@ -94,4 +102,5 @@ export {
   getPurchases,
   deletePurchase,
   updateOrder,
+  deleteOrder,
 };

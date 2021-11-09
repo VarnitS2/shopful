@@ -19,7 +19,12 @@ import {
   MuiPickersUtilsProvider,
   KeyboardDatePicker,
 } from "@material-ui/pickers";
-import { getMarkets, getPurchases, updateOrder } from "../services/api";
+import {
+  getMarkets,
+  getPurchases,
+  updateOrder,
+  deleteOrder,
+} from "../services/api";
 import AddItemPage from "../components/AddItemPage";
 
 const useStyles = makeStyles({
@@ -45,6 +50,9 @@ const useStyles = makeStyles({
     border: "2px solid #000",
     boxShadow: 24,
     p: 4,
+  },
+  button: {
+    borderRadius: "100px",
   },
 });
 
@@ -95,6 +103,10 @@ function OrderPage() {
       navigate(`/`)
     );
     console.log(orderDate, marketId, notes, total);
+  };
+
+  const goBack = () => {
+    deleteOrder(orderId).then(() => navigate(`/`));
   };
 
   useEffect(async () => {
@@ -175,7 +187,14 @@ function OrderPage() {
         onChange={handleNotesChange}
       />
 
-      <Button onClick={saveOrder}>Save Order</Button>
+      <div className={classes.dateContainer}>
+        <Button className={classes.button} onClick={goBack}>
+          Cancel
+        </Button>
+        <Button className={classes.button} onClick={saveOrder}>
+          Save Order
+        </Button>
+      </div>
     </div>
   );
 }

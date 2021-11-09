@@ -24,7 +24,7 @@ def get_table():
     if table not in TABLES:
         return jsonify(status=404, message='Provided table does not exist in database')
 
-    tableElems = _db_worker.select_all_from_table(table)
+    tableElems = _db_worker.select_all_from_table(table)[1:]
 
     if table == 'Items':
         tableElemsDict = [{

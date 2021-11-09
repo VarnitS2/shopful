@@ -20,7 +20,7 @@ class Worker:
         }
 
         self._con = mysql.connector.connect(**self._config)
-        self._cur = self._con.cursor()
+        self._cur = self._con.cursor(buffered=True)
 
     # General SELECTs
     def select_all_from_table(self, table) -> list:
@@ -51,7 +51,7 @@ class Worker:
     # Update records on the database 
     def update_order(self, order_id, purchase_date, market_id, notes, total_spent) -> None:
         self._cur.execute('''UPDATE Orders
-                            SET purchase_date = {}, market_id = {}, notes = \'{}\', total_spent = {}
+                            SET purchase_date = \'{}\', market_id = {}, notes = \'{}\', total_spent = {}
                             WHERE order_id = {};'''
                             .format(purchase_date, market_id, notes, total_spent, order_id))
         self._con.commit()

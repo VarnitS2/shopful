@@ -6,34 +6,57 @@ function requestOptions(type, info) {
   };
 }
 
-function getItems() {
-  return fetch(
+async function getItems() {
+  const response = await fetch(
     `/api/get/table`,
     requestOptions("POST", { table: "Items" })
-  ).then((response) => response.json());
+  );
+  return await response.json();
 }
 
-function getMarkets() {
-  return fetch(
+async function getMarkets() {
+  const response = await fetch(
     `/api/get/table`,
     requestOptions("POST", { table: "Markets" })
-  ).then((response) => response.json());
+  );
+  return await response.json();
 }
 
-function postNewOrder() {
-  return fetch(
+async function postNewOrder() {
+  const response = await fetch(
     `/api/add/order`,
     requestOptions("POST", {
       notes: null,
-      total_spent: 0.0,
+      total_spent: 0,
       user_id: null,
       market_id: null,
     })
-  ).then((response) => response.json());
+  );
+  return await response.json();
 }
 
-function postNewPurchase(order_id, item_id, price, quantity) {
-  return fetch(
+async function updateOrder(
+  order_id,
+  purchase_date,
+  market_id,
+  notes,
+  total_spent
+) {
+  const response = await fetch(
+    `/api/update/order`,
+    requestOptions("POST", {
+      order_id,
+      purchase_date,
+      market_id,
+      notes,
+      total_spent,
+    })
+  );
+  return await response.json();
+}
+
+async function postNewPurchase(order_id, item_id, price, quantity) {
+  const response = await fetch(
     `/api/add/purchase`,
     requestOptions("POST", {
       order_id,
@@ -41,7 +64,34 @@ function postNewPurchase(order_id, item_id, price, quantity) {
       price,
       quantity,
     })
-  ).then((response) => response.json());
+  );
+  return await response.json();
 }
 
-export { getItems, getMarkets, postNewOrder, postNewPurchase };
+async function getPurchases(order_id) {
+  const response = await fetch(
+    `/api/get/purchases`,
+    requestOptions("POST", {
+      order_id,
+    })
+  );
+  return await response.json();
+}
+
+async function deletePurchase(purchase_id) {
+  const response = await fetch(
+    `/api/delete/purchase`,
+    requestOptions("POST", { purchase_id })
+  );
+  return await response.json();
+}
+
+export {
+  getItems,
+  getMarkets,
+  postNewOrder,
+  postNewPurchase,
+  getPurchases,
+  deletePurchase,
+  updateOrder,
+};

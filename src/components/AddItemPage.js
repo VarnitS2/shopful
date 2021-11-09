@@ -1,9 +1,3 @@
-//TODO: Convert this page into a modal overlay
-//TODO: Display top food items
-//TODO: Display search bar
-//TODO: Display food by category -> search query for category
-//TODO: Specify price, quantity, and market (?)
-
 import React, { useState, useEffect } from "react";
 import {
   Button,
@@ -17,7 +11,6 @@ import {
   FormControlLabel,
 } from "@mui/material";
 import { getItems, postNewPurchase } from "../services/api";
-import { useNavigate, useParams } from "react-router-dom";
 import { makeStyles } from "@material-ui/core";
 
 const useStyles = makeStyles({
@@ -35,15 +28,13 @@ const useStyles = makeStyles({
   },
 });
 
-function AddItemPage() {
-  const { orderId } = useParams();
+function AddItemPage(props) {
   const classes = useStyles();
-  const navigate = useNavigate();
 
-  const [itemId, setItemId] = React.useState(null);
-  const [itemList, setItemList] = React.useState([]);
-  const [price, setPrice] = React.useState();
-  const [quantity, setQuantity] = React.useState();
+  const [itemId, setItemId] = useState(null);
+  const [itemList, setItemList] = useState([]);
+  const [price, setPrice] = useState();
+  const [quantity, setQuantity] = useState();
 
   const handleItemSelection = (e, val) => {
     if (val) {
@@ -54,13 +45,15 @@ function AddItemPage() {
   const updateQuantity = (e) => setQuantity(e.target.value);
 
   const sumbitItem = () => {
-    if (orderId && itemId && price && quantity) {
-      postNewPurchase(orderId, itemId, price, quantity);
+    if (props.orderid && itemId && price && quantity) {
+      postNewPurchase(props.orderid, itemId, price, quantity).then(() =>
+        props.onClick()
+      );
     }
   };
 
-  useEffect(() => {
-    getItems().then((tempArray) => {
+  useEffect(async () => {
+    await getItems().then((tempArray) => {
       setItemList(tempArray.message);
     });
   }, []);

@@ -38,7 +38,7 @@ class Worker:
     # Insert new records (rows) to the database
     def add_to_orders(self, order_id, notes, total_spent, user_id, market_id) -> None:
         self._cur.execute('''INSERT INTO Orders (order_id, notes, total_spent, user_id, market_id) VALUES
-                            ({}, {}, {}, {}, {})'''.format(order_id, notes, total_spent, user_id, market_id))
+                            ({}, \'{}\', {}, {}, {})'''.format(order_id, notes, total_spent, user_id, market_id))
         self._con.commit()
 
     def add_to_purchases(self, purchase_id, order_id, market_id, item_id, price, quantity) -> None:
@@ -59,7 +59,7 @@ class Worker:
     # Update records on the database 
     def update_order(self, order_id, purchase_date, market_id, notes, total_spent, user_id) -> None:
         self._cur.execute('''UPDATE Orders
-                            SET purchase_date = {}, market_id = {}, notes = {}, total_spent = {}, user_id = {}, market_id = {}
+                            SET purchase_date = {}, market_id = {}, notes = \'{}\', total_spent = {}, user_id = {}, market_id = {}
                             WHERE order_id = {};'''.format(purchase_date, market_id, notes, total_spent, user_id, order_id))
         self._con.commit()
 
@@ -77,7 +77,7 @@ class Worker:
     def delete_order_for_user_and_date(self, user_id, purchase_date) -> None:
         self._cur.execute('''DELETE FROM Orders
                             WHERE user_id = {} 
-                            AND purchase_date = {};'''.format(user_id, purchase_date))
+                            AND purchase_date = \'{}\';'''.format(user_id, purchase_date))
         self._con.commit()
 
     def delete_order_for_user_order_id(self, user_id, order_id) -> None:

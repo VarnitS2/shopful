@@ -51,6 +51,7 @@ const useStyles = makeStyles({
 function OrderPage() {
   const { orderId } = useParams();
   const classes = useStyles();
+  const navigate = useNavigate();
 
   const [orderDate, setOrderDate] = useState(new Date());
   const [marketList, setMarketList] = React.useState([]);
@@ -90,7 +91,9 @@ function OrderPage() {
   };
 
   const saveOrder = () => {
-    updateOrder(orderId, orderDate, marketId, notes, total);
+    updateOrder(orderId, orderDate, marketId, notes, total).then(() =>
+      navigate(`/`)
+    );
     console.log(orderDate, marketId, notes, total);
   };
 

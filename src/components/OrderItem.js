@@ -10,11 +10,33 @@ import {
   List,
   ListItem,
   ListItemText,
+  Paper,
 } from "@mui/material";
+import { makeStyles } from "@material-ui/core";
 import { getPurchases } from "../services/api";
-import PurchaseItem from "./PurchaseItem";
+
+const useStyles = makeStyles({
+  root: {
+    textAlign: "center",
+    width: "50%",
+  },
+  header: {
+    height: "50%",
+  },
+  pastButton: {
+    borderRadius: "100px",
+  },
+  list: {
+    maxHeight: "100%",
+    overflow: "auto",
+  },
+  user: {
+    borderRadius: "100px",
+  },
+});
 
 function OrderItem(props) {
+  const classes = useStyles();
   const [purchasesList, setPurchasesList] = React.useState([]);
 
   useEffect(async () => {
@@ -23,8 +45,9 @@ function OrderItem(props) {
     );
   }, [props.order_id]);
   return (
-    <Card sx={{ minWidth: 275 }}>
+    <Card className={classes.root}>
       <CardHeader
+        className={classes.header}
         title={`Order # ${props.order_id}`}
         subheader={props.order_date}
       />
@@ -35,15 +58,17 @@ function OrderItem(props) {
             <ListItemText primary="Price" />
             <ListItemText primary="Quantity" />
           </ListItem>
-          {purchasesList.map((item) => (
-            <div>
-              <ListItem disablePadding>
+        </List>
+        <List>
+          <Paper style={{ maxHeight: 200, overflow: "auto" }}>
+            {purchasesList.map((item) => (
+              <ListItem className={classes.list}>
                 <ListItemText primary={item.item_id} />
                 <ListItemText primary={item.price} />
                 <ListItemText primary={item.quantity} />
               </ListItem>
-            </div>
-          ))}
+            ))}
+          </Paper>
         </List>
 
         <Typography>Total: {props.order_total}</Typography>

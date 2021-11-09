@@ -1,44 +1,58 @@
-import * as React from "react";
+import React, { useState, useEffect } from "react";
 import {
   Box,
   Card,
   CardActions,
   CardContent,
+  CardHeader,
   Button,
   Typography,
+  List,
+  ListItem,
+  ListItemText,
 } from "@mui/material";
+import { getPurchases } from "../services/api";
+import PurchaseItem from "./PurchaseItem";
 
-const bull = (
-  <Box
-    component="span"
-    sx={{ display: "inline-block", mx: "2px", transform: "scale(0.8)" }}
-  >
-    •
-  </Box>
-);
+function OrderItem(props) {
+  const [purchasesList, setPurchasesList] = React.useState([]);
 
-export default function BasicCard() {
+  useEffect(async () => {
+    await getPurchases(props.order_id).then((tempArray) =>
+      setPurchasesList(tempArray.message)
+    );
+  }, [props.order_id]);
   return (
     <Card sx={{ minWidth: 275 }}>
+      <CardHeader
+        title={`Order # ${props.order_id}`}
+        subheader={props.order_date}
+      />
       <CardContent>
-        <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-          Word of the Day
-        </Typography>
-        <Typography variant="h5" component="div">
-          be{bull}nev{bull}o{bull}lent
-        </Typography>
-        <Typography sx={{ mb: 1.5 }} color="text.secondary">
-          adjective
-        </Typography>
-        <Typography variant="body2">
-          well meaning and kindly.
-          <br />
-          {'"a benevolent smile"'}
-        </Typography>
+        <List>
+          <ListItem>
+            <ListItemText primary="Item Id" />
+            <ListItemText primary="Price" />
+            <ListItemText primary="Quantity" />
+          </ListItem>
+          {purchasesList.map((item) => (
+            <div>
+              <ListItem disablePadding>
+                <ListItemText primary={item.item_id} />
+                <ListItemText primary={item.price} />
+                <ListItemText primary={item.quantity} />
+              </ListItem>
+            </div>
+          ))}
+        </List>
+
+        <Typography>Total: {props.order_total}</Typography>
       </CardContent>
       <CardActions>
-        <Button size="small">Learn More</Button>
+        <Button size="small">Delete Order</Button>
       </CardActions>
     </Card>
   );
 }
+
+export default OrderItem;

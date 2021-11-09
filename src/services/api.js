@@ -86,6 +86,14 @@ async function deletePurchase(purchase_id) {
   return await response.json();
 }
 
+async function getMaxPricePurchases() {
+  const response = await fetch(
+    `/api/get/max-price-per-user`,
+    requestOptions("POST", {})
+  );
+  return await response.json();
+}
+
 async function deleteOrder(order_id) {
   const response = await fetch(
     `/api/delete/order`,
@@ -102,5 +110,6 @@ export {
   getPurchases,
   deletePurchase,
   updateOrder,
+  getMaxPricePurchases,
   deleteOrder,
 };

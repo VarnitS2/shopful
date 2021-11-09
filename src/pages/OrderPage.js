@@ -20,7 +20,7 @@ import {
   KeyboardDatePicker,
 } from "@material-ui/pickers";
 import { getMarkets, getPurchases } from "../services/api";
-import AddItemPage from "./AddItemPage";
+import AddItemPage from "../components/AddItemPage";
 
 const useStyles = makeStyles({
   root: {

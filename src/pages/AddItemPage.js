@@ -35,8 +35,7 @@ const useStyles = makeStyles({
   },
 });
 
-function AddItemPage() {
-  const { orderId } = useParams();
+function AddItemPage(props) {
   const classes = useStyles();
   const navigate = useNavigate();
 
@@ -54,9 +53,9 @@ function AddItemPage() {
   const updateQuantity = (e) => setQuantity(e.target.value);
 
   const sumbitItem = () => {
-    if (orderId && itemId && price && quantity) {
-      postNewPurchase(orderId, itemId, price, quantity).then(() =>
-        navigate(-1)
+    if (props.orderid && itemId && price && quantity) {
+      postNewPurchase(props.orderid, itemId, price, quantity).then(() =>
+        props.onClick()
       );
     }
   };

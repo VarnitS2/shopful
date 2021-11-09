@@ -35,6 +35,7 @@ class Worker:
                             WHERE {} = {};'''.format(table, condition, value))
         return self._cur.fetchall()
 
+    # Insert new records (rows) to the database
     def add_to_orders(self, order_id, notes, total_spent, user_id, market_id) -> None:
         self._cur.execute('''INSERT INTO Orders (order_id, notes, total_spent, user_id, market_id) VALUES
                             ({}, {}, {}, {}, {})'''.format(order_id, notes, total_spent, user_id, market_id))
@@ -45,19 +46,45 @@ class Worker:
                             .format(purchase_id, order_id, market_id, item_id, price, quantity))
         self._con.commit()
 
+    # Search the database using a keyword search. Your application should allow the user to input their search keyword and return the result to the interfac
+    def get_orders_from_time_period(self, user_id, start_date, end_date) -> list:
+        self._cur.execute('''SELECT M.market_name, O.notes, O.total_spent, I.item_name, I.category
+                            FROM Orders AS O JOIN Purchases AS P ON O.order_id = P.purchase_id 
+                                JOIN Items AS I ON P.item_id = I.item_id 
+                                JOIN Markets AS M ON O.market_id = M.market_id
+                            WHERE O.user_id = {} AND O.purchase_date >= \'{}\' AND O.purchase_date <= \'{}\';'''
+                            .format(user_id, start_date, end_date))
+        return self._cur.fetchall()
+
+    # Update records on the database 
+    def update_order(self, order_id, purchase_date, market_id, notes, total_spent, user_id) -> None:
+        self._cur.execute('''UPDATE Orders
+                            SET purchase_date = {}, market_id = {}, notes = {}, total_spent = {}, user_id = {}, market_id = {}
+                            WHERE order_id = {};'''.format(purchase_date, market_id, notes, total_spent, user_id, order_id))
+        self._con.commit()
+
     # Delete rows from the database 
-    def delete_from_users(self, user_id):
+    def delete_from_users(self, user_id) -> None:
         self._cur.execute('''DELETE FROM Users
                             WHERE user_id = {};'''.format(user_id))
+        self._con.commit()
 
-    def delete_all_orders_for_user(self, user_id):
+    def delete_all_orders_for_user(self, user_id) -> None:
         self._cur.execute('''DELETE FROM Orders
                             WHERE user_id = {};'''.format(user_id))
+        self._con.commit()
 
-    def delete_order_for_user_and_date(self, user_id, purchase_date):
+    def delete_order_for_user_and_date(self, user_id, purchase_date) -> None:
         self._cur.execute('''DELETE FROM Orders
                             WHERE user_id = {} 
                             AND purchase_date = {};'''.format(user_id, purchase_date))
+        self._con.commit()
+
+    def delete_order_for_user_order_id(self, user_id, order_id) -> None:
+        self._cur.execute('''DELETE FROM Orders
+                            WHERE user_id = {}
+                            AND order_id = {};'''.format(user_id, order_id))
+        self._con.commit()
 
     # Integrate into your application both of the advanced SQL queries you developed in stage 3
     def get_freq_of_item_bought(self) -> list:

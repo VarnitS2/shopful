@@ -17,7 +17,7 @@ import {
   MuiPickersUtilsProvider,
   KeyboardDatePicker,
 } from "@material-ui/pickers";
-import { getMarkets } from "../services/api";
+import { getMarkets, getPurchases } from "../services/api";
 
 const useStyles = makeStyles({
   root: {
@@ -41,6 +41,7 @@ function OrderPage() {
 
   const [orderDate, setOrderDate] = useState(new Date());
   const [marketList, setMarketList] = React.useState([]);
+  const [purchasesList, setPurchasesList] = React.useState([]);
 
   const handleDateChange = (date) => {
     console.log(date);
@@ -82,8 +83,14 @@ function OrderPage() {
     },
   ];
 
-  useEffect(() => {
-    getMarkets().then((tempArray) => setMarketList(tempArray.message));
+  useEffect(async () => {
+    await getPurchases(orderId).then((tempArray) =>
+      setPurchasesList(tempArray.message)
+    );
+
+    await getMarkets().then((tempArray) => {
+      setMarketList(tempArray.message);
+    });
   }, []);
 
   return (
@@ -113,12 +120,11 @@ function OrderPage() {
         <Typography variant="h6">Purchases</Typography>
         <List>
           <ListItem>
-            <ListItemText primary="Item Name" />
-            <ListItemText primary="Market Name" />
+            <ListItemText primary="Item Id" />
             <ListItemText primary="Price" />
             <ListItemText primary="Quantity" />
           </ListItem>
-          {tempJsonObj.map((item) => (
+          {purchasesList.map((item) => (
             <PurchaseItem itemObj={item} />
           ))}
         </List>

@@ -35,8 +35,7 @@ function PurchaseItem(props) {
         }
         disablePadding
       >
-        <ListItemText primary={props.itemObj.itemName} />
-        <ListItemText primary={props.itemObj.marketName} />
+        <ListItemText primary={props.itemObj.item_id} />
         <ListItemText primary={props.itemObj.price} />
         <ListItemText primary={props.itemObj.quantity} />
       </ListItem>

@@ -55,7 +55,9 @@ function AddItemPage() {
 
   const sumbitItem = () => {
     if (orderId && itemId && price && quantity) {
-      postNewPurchase(orderId, itemId, price, quantity);
+      postNewPurchase(orderId, itemId, price, quantity).then(() =>
+        navigate(-1)
+      );
     }
   };
 

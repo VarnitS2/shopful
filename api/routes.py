@@ -181,6 +181,7 @@ def get_purchases() -> Response:
             'purchase_id': purchase[0],
             'order_id': purchase[1],
             'item_id': purchase[2],
+            'item_name': _db_worker.select_condition_from_table('Items', 'item_id', purchase[2])[0][1],
             'price': purchase[3],
             'quantity': purchase[4],
         } for purchase in purchases])
@@ -249,7 +250,7 @@ def login_user() -> Response:
             return jsonify(status=400, message='Invalid password')
         else:
             return jsonify(status=200, message='Login successful')
-            
+
 @app.route('/api/get/max-price-per-user', methods=['POST'])
 def get_analytics_max_price_per_user() -> Response:
     try:

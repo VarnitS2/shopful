@@ -105,7 +105,7 @@ def add_purchase():
 
     if (purchase_id and order_id and item_id and price and quantity):
         try:
-             _db_worker.add_to_purchases(purchase_id, order_id, item_id, price, quantity)
+            _db_worker.add_to_purchases(purchase_id, order_id, item_id, price, quantity)
         except Exception as e:
             return jsonify(status=400, message=e)
         else:

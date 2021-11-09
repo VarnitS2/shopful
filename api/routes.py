@@ -25,11 +25,45 @@ def get_table():
         return jsonify(status=404, message='Provided table does not exist in database')
 
     tableElems = _db_worker.select_all_from_table(table)
-    tableElemsDict = [{
-        'item_id': elem[0],
-        'item_name': elem[1],
-        'category': elem[2][:-1]
-    } for elem in tableElems]
+
+    if table == 'Items':
+        tableElemsDict = [{
+            'item_id': elem[0],
+            'item_name': elem[1],
+            'category': elem[2][:-1]
+        } for elem in tableElems]
+    elif table == 'Markets':
+        tableElemsDict = [{
+            'market_id': elem[0],
+            'market_name': elem[1],
+            'market_location': elem[2],
+            'rating': elem[3]
+        } for elem in tableElems]
+    elif table == 'Orders':
+        tableElemsDict = [{
+            'order_id': elem[0],
+            'purchase_date': elem[1],
+            'notes': elem[2],
+            'total_spent': elem[3],
+            'user_id': elem[4],
+            'market_id': elem[5]
+        } for elem in tableElems]
+    elif table == 'Purchases':
+        tableElemsDict = [{
+            'purchase_id': elem[0],
+            'order_id': elem[1],
+            'item_id': elem[2],
+            'price': elem[3],
+            'quantity': elem[4]
+        } for elem in tableElems]
+    else:
+        tableElemsDict = [{
+            'user_id': elem[0],
+            'username': elem[1],
+            'user_password': elem[2],
+            'email': elem[3],
+            'age': elem[4]
+        } for elem in tableElems]
 
     return jsonify(status=200, message=tableElemsDict)
 

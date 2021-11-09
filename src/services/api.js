@@ -94,6 +94,14 @@ async function deleteOrder(order_id) {
   return await response.json();
 }
 
+async function getFrequentItemsBought() {
+  const response = await fetch(
+    `/api/get/frequently-bought-items`,
+    requestOptions("POST", {})
+  );
+  return await response.json();
+}
+
 export {
   getItems,
   getMarkets,
@@ -103,4 +111,5 @@ export {
   deletePurchase,
   updateOrder,
   deleteOrder,
+  getFrequentItemsBought,
 };

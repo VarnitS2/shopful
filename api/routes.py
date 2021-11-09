@@ -80,7 +80,7 @@ def add_order():
     except Exception as e:
         return jsonify(status=400, message=e)
     else:
-        return jsonify(status=200, message='Order with ID {} added successfully'.format(order_id))
+        return jsonify(status=200, message=(order_id))
 
 @app.route('/api/get/order/id', methods=['POST'])
 def get_order_id():

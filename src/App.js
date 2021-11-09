@@ -12,7 +12,7 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/order" element={<OrderPage />} />
+        <Route path="/order/:orderId" element={<OrderPage />} />
         <Route path="/settings" element={<UserPage />} />
         <Route path="/past-orders" element={<PastOrdersPage />} />
         <Route path="/analytics" element={<AnalyticsPage />} />

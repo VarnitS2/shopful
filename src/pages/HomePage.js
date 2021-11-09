@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Button from "@material-ui/core/Button";
 import { useNavigate } from "react-router-dom";
 import { makeStyles } from "@material-ui/core";
+import { postNewOrder } from "../services/api";
 
 const useStyles = makeStyles({
   root: {
@@ -25,9 +26,17 @@ function HomePage() {
   const classes = useStyles();
   const navigate = useNavigate();
 
+  const [orderId, setorderId] = useState(null);
+
   const createNewOrder = () => {
-    navigate(`/order`);
+    postNewOrder().then((tempVar) => setorderId(tempVar.message));
   };
+
+  useEffect(() => {
+    if (orderId) {
+      navigate(`/order/${orderId}`);
+    }
+  }, [orderId]);
 
   const viewPastOrder = () => {
     navigate(`/past-orders`);

@@ -10,7 +10,11 @@ import {
   Radio,
   FormControlLabel,
 } from "@mui/material";
-import { getItems, postNewPurchase } from "../services/api";
+import {
+  getItems,
+  postNewPurchase,
+  getFrequentItemsBought,
+} from "../services/api";
 import { makeStyles } from "@material-ui/core";
 
 const useStyles = makeStyles({
@@ -33,6 +37,7 @@ function AddItemPage(props) {
 
   const [itemId, setItemId] = useState(null);
   const [itemList, setItemList] = useState([]);
+  const [freqList, setFreqList] = useState([]);
   const [price, setPrice] = useState();
   const [quantity, setQuantity] = useState();
 
@@ -55,6 +60,10 @@ function AddItemPage(props) {
   useEffect(async () => {
     await getItems().then((tempArray) => {
       setItemList(tempArray.message);
+    });
+    await getFrequentItemsBought().then((tempArray) => {
+      console.log(tempArray.message);
+      setFreqList(tempArray.message);
     });
   }, []);
 
@@ -85,9 +94,13 @@ function AddItemPage(props) {
           value={itemId}
           onChange={handleItemSelection}
         >
-          <FormControlLabel value="milk" control={<Radio />} label="Milk" />
-          <FormControlLabel value="bread" control={<Radio />} label="Bread" />
-          <FormControlLabel value="butter" control={<Radio />} label="Butter" />
+          {freqList.map((item) => {
+            <FormControlLabel
+              value={item.item_id}
+              control={<Radio />}
+              label={item.item_id}
+            />;
+          })}
         </RadioGroup>
       </FormControl>
 

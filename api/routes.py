@@ -177,7 +177,7 @@ def delete_purchase() -> Response:
         return jsonify(status=200, message='Purchase deleted successfully')
 
 @app.route('/api/get/frequently-bought-items', methods=['POST'])
-def delete_purchase() -> Response:
+def getFrequentlyBoughtItems() -> Response:
     try:
         frequent_purchases = _db_worker.get_freq_of_item_bought()
     except Exception as e:

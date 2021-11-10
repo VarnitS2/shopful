@@ -40,11 +40,8 @@ class Worker:
 
     # Search the database using a keyword search. Your application should allow the user to input their search keyword and return the result to the interfac
     def get_orders_from_time_period(self, user_id, start_date, end_date) -> list:
-        self._cur.execute('''SELECT M.market_name, O.notes, O.total_spent, I.item_name, I.category
-                            FROM Orders AS O JOIN Purchases AS P ON O.order_id = P.purchase_id 
-                                JOIN Items AS I ON P.item_id = I.item_id 
-                                JOIN Markets AS M ON O.market_id = M.market_id
-                            WHERE O.user_id = {} AND O.purchase_date >= \'{}\' AND O.purchase_date <= \'{}\';'''
+        self._cur.execute('''SELECT * FROM Orders
+                            WHERE user_id = {} AND purchase_date >= \'{}\' AND purchase_date <= \'{}\';'''
                             .format(user_id, start_date, end_date))
         return self._cur.fetchall()
 
@@ -91,6 +88,16 @@ class Worker:
         self._cur.execute('''DELETE FROM Purchases
                             WHERE purchase_id = {};'''.format(purchase_id))
         self._con.commit()
+
+    def add_to_users(self, username, email, user_password, age) -> None:
+        self._cur.execute('''INSERT INTO Users (username, user_password, email, age) VALUES
+                            (\'{}\', \'{}\', \'{}\', {})'''.format(username, user_password, email, age))
+        self._con.commit()
+
+    def get_user(self, user_email) -> list:
+        self._cur.execute('''SELECT * FROM Users
+                            WHERE email = \'{}\';'''.format(user_email))
+        return self._cur.fetchall()
 
     # Delete rows from the database 
     def delete_from_users(self, user_id) -> None:

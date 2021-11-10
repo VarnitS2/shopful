@@ -251,6 +251,24 @@ def login_user() -> Response:
         else:
             return jsonify(status=200, message='Login successful')
 
+@app.route('/api/delete/user', methods=['POST'])
+def delete_user() -> Response:
+    email = request.get_json()['email']
+    user_password = request.get_json()['user_password']
+    user_password_hashed = hashlib.sha224(user_password.encode('ascii')).hexdigest()
+
+    try:
+        user = _db_worker.get_user(email)
+
+        if user[0][2] != user_password_hashed:
+            return jsonify(status=400, message='Invalid password')
+        else:
+            _db_worker.delete_from_users(email)
+    except Exception as e:
+        return jsonify(status=400, message=e)
+    else:
+        return jsonify(status=200, message='User deleted successfully')
+
 @app.route('/api/get/max-price-per-user', methods=['POST'])
 def get_analytics_max_price_per_user() -> Response:
     try:

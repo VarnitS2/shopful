@@ -9,6 +9,7 @@ import {
   RadioGroup,
   Radio,
   FormControlLabel,
+  Paper,
 } from "@mui/material";
 import {
   getItems,
@@ -44,6 +45,12 @@ function AddItemPage(props) {
   const handleItemSelection = (e, val) => {
     if (val) {
       setItemId(val.item_id);
+    }
+  };
+
+  const handleOtherItemSelect = (e, val) => {
+    if (val) {
+      setItemId(val);
     }
   };
   const updatePrice = (e) => setPrice(e.target.value);
@@ -86,25 +93,26 @@ function AddItemPage(props) {
 
       <Typography variant="h6">OR </Typography>
 
-      <FormControl component="fieldset">
-        <FormLabel component="legend">Pick a Top Item</FormLabel>
-        <RadioGroup
-          aria-label="gender"
-          name="controlled-radio-buttons-group"
-          value={itemId}
-          onChange={handleItemSelection}
-        >
-          {freqList.map((item) => {
-            <FormControlLabel
-              value={item.item_id}
-              control={<Radio />}
-              label={`${item.item_name.split(":")[0]}
+      <Paper style={{ maxHeight: 200, overflow: "auto" }}>
+        <FormControl component="fieldset">
+          <FormLabel component="legend">Pick a Top Item</FormLabel>
+          <RadioGroup
+            aria-label="gender"
+            name="controlled-radio-buttons-group"
+            onChange={handleOtherItemSelect}
+          >
+            {freqList.map((item) => (
+              <FormControlLabel
+                value={item.item_id}
+                control={<Radio />}
+                label={`${item.item_name.split(":")[0]}
                 :
                 ${item.item_name.split(":")[1]}`}
-            />;
-          })}
-        </RadioGroup>
-      </FormControl>
+              />
+            ))}
+          </RadioGroup>
+        </FormControl>
+      </Paper>
 
       <div className={classes.dateContainer}>
         <Typography variant="h6">Price:</Typography>

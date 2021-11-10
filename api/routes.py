@@ -197,6 +197,19 @@ def delete_purchase() -> Response:
     else:
         return jsonify(status=200, message='Purchase deleted successfully')
 
+@app.route('/api/get/frequently-bought-items', methods=['POST'])
+def getFrequentlyBoughtItems() -> Response:
+    try:
+        frequent_purchases = _db_worker.get_freq_of_item_bought()
+    except Exception as e:
+        return jsonify(status=400, message=e)
+    else:
+        return jsonify(status=200, message=[{
+            'item_id': purchase[0],
+            'item_name': _db_worker.select_condition_from_table('Items', 'item_id', purchase[0])[0][1],
+            'quantity': purchase[1],
+            'user_id': purchase[2],
+        } for purchase in frequent_purchases])
 @app.route('/api/add/user', methods=['POST'])
 def add_user() -> Response:
     username = request.get_json()['username']
@@ -282,5 +295,3 @@ def get_analytics_max_price_per_user() -> Response:
             'item_name': _db_worker.select_condition_from_table('Items', 'item_id', purchase[1])[0][1],
             'user_id': purchase[2],
             } for purchase in max_purchases])
-
-

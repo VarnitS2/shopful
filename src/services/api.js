@@ -102,6 +102,13 @@ async function deleteOrder(order_id) {
   return await response.json();
 }
 
+async function getFrequentItemsBought() {
+  const response = await fetch(
+    `/api/get/frequently-bought-items`,
+    requestOptions("POST", {})
+  );
+  return await response.json();
+}
 async function getPastOrdersBetween(start_date, end_date, user_id) {
   const response = await fetch(
     `/api/search/order`,
@@ -120,5 +127,6 @@ export {
   updateOrder,
   getMaxPricePurchases,
   deleteOrder,
+  getFrequentItemsBought,
   getPastOrdersBetween,
 };

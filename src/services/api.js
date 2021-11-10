@@ -104,7 +104,7 @@ async function deleteOrder(order_id) {
 
 async function getPastOrdersBetween(start_date, end_date, user_id) {
   const response = await fetch(
-    `/api/get/past-orders`,
+    `/api/search/order`,
     requestOptions("POST", { start_date, end_date, user_id })
   );
   return await response.json();

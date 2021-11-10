@@ -1,11 +1,12 @@
 import React, { useState } from "react";
-import { TextField, Button } from "@mui/material";
+import { TextField, Button, Grid } from "@mui/material";
 import AdapterDateFns from "@mui/lab/AdapterDateFns";
 import LocalizationProvider from "@mui/lab/LocalizationProvider";
 import Box from "@mui/material/Box";
 import StaticDateRangePicker from "@mui/lab/StaticDateRangePicker";
 import { makeStyles } from "@material-ui/core";
 import OrderItem from "../components/OrderItem";
+import { useNavigate } from "react-router-dom";
 import { getPastOrdersBetween } from "../services/api";
 
 const useStyles = makeStyles({
@@ -21,15 +22,27 @@ const useStyles = makeStyles({
 
 function PastOrdersPage() {
   const classes = useStyles();
+  const navigate = useNavigate();
   const [showList, setShowList] = React.useState([null]);
   const [dateRange, setDateRange] = React.useState([null, null]);
 
-  const createPastList = () => {
+  const [orderList, setOrderList] = useState([]);
+
+  const createPastList = async () => {
     console.log(dateRange);
     // TODO: get the list of the orders from database
-    // getPastOrdersBetween(dateRange[0], dateRange[1], user_id).then((responseArray) => {
-    //   setShowList(responseArray);
-    // });
+    await getPastOrdersBetween(
+      dateRange[0].toISOString().split("T")[0] +
+        " " +
+        dateRange[0].toTimeString().split(" ")[0],
+      dateRange[1].toISOString().split("T")[0] +
+        " " +
+        dateRange[1].toTimeString().split(" ")[0],
+      3
+    ).then((responseArray) => {
+      console.log(responseArray.message);
+      setOrderList(responseArray.message);
+    });
   };
 
   return (
@@ -57,8 +70,19 @@ function PastOrdersPage() {
           Show My List
         </Button>
       </div>
-      <OrderItem order_id={3} order_date={"June 8th 2001"} order_total={100} />
-      <OrderItem order_id={5} order_date={"June 9th 2001"} order_total={110} />
+      {orderList ? (
+        <div className={classes.root}>
+          <Grid>
+            {orderList.map((item) => (
+              <OrderItem
+                order_id={item.order_id}
+                order_date={item.purchase_date}
+                order_total={item.total_spent}
+              />
+            ))}
+          </Grid>
+        </div>
+      ) : null}
     </div>
   );
 }

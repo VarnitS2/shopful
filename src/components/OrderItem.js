@@ -18,11 +18,8 @@ import { getPurchases } from "../services/api";
 const useStyles = makeStyles({
   root: {
     textAlign: "center",
-    width: "50%",
   },
-  header: {
-    height: "50%",
-  },
+  header: {},
   pastButton: {
     borderRadius: "100px",
   },
@@ -39,11 +36,11 @@ function OrderItem(props) {
   const classes = useStyles();
   const [purchasesList, setPurchasesList] = React.useState([]);
 
-  useEffect(async () => {
-    await getPurchases(props.order_id).then((tempArray) =>
-      setPurchasesList(tempArray.message)
-    );
-  }, [props.order_id]);
+  // useEffect(async () => {
+  //   await getPurchases(props.order_id).then((tempArray) =>
+  //     setPurchasesList(tempArray.message)
+  //   );
+  // }, [props.order_id]);
   return (
     <Card className={classes.root}>
       <CardHeader
@@ -52,7 +49,7 @@ function OrderItem(props) {
         subheader={props.order_date}
       />
       <CardContent>
-        <List>
+        {/* <List>
           <ListItem>
             <ListItemText primary="Item Id" />
             <ListItemText primary="Price" />
@@ -69,7 +66,7 @@ function OrderItem(props) {
               </ListItem>
             ))}
           </Paper>
-        </List>
+        </List> */}
 
         <Typography>Total: {props.order_total}</Typography>
       </CardContent>

@@ -27,10 +27,19 @@ function HomePage() {
   const navigate = useNavigate();
 
   const [orderId, setorderId] = useState(null);
+  const [currentUser, setCurrentUser] = useState("");
 
   const createNewOrder = () => {
     postNewOrder().then((tempVar) => setorderId(tempVar.message));
   };
+
+  useEffect(() => {
+    if (window.sessionStorage.getItem("currentUser") === null) {
+      navigate("/login");
+    } else {
+      setCurrentUser(window.sessionStorage.getItem("currentUser"));
+    }
+  }, []);
 
   useEffect(() => {
     if (orderId) {

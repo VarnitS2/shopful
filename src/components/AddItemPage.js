@@ -98,7 +98,9 @@ function AddItemPage(props) {
             <FormControlLabel
               value={item.item_id}
               control={<Radio />}
-              label={item.item_id}
+              label={`${item.item_name.split(":")[0]}
+                :
+                ${item.item_name.split(":")[1]}`}
             />;
           })}
         </RadioGroup>

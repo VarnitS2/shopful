@@ -100,9 +100,9 @@ class Worker:
         return self._cur.fetchall()
 
     # Delete rows from the database 
-    def delete_from_users(self, user_id) -> None:
+    def delete_from_users(self, email) -> None:
         self._cur.execute('''DELETE FROM Users
-                            WHERE user_id = {};'''.format(user_id))
+                            WHERE email = {};'''.format(email))
         self._con.commit()
 
     # Integrate into your application both of the advanced SQL queries you developed in stage 3

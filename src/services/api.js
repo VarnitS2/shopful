@@ -102,6 +102,14 @@ async function deleteOrder(order_id) {
   return await response.json();
 }
 
+async function getPastOrdersBetween(start_date, end_date, user_id) {
+  const response = await fetch(
+    `/api/search/order`,
+    requestOptions("POST", { start_date, end_date, user_id })
+  );
+  return await response.json();
+}
+
 export {
   getItems,
   getMarkets,
@@ -112,4 +120,5 @@ export {
   updateOrder,
   getMaxPricePurchases,
   deleteOrder,
+  getPastOrdersBetween,
 };

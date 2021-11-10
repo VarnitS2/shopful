@@ -246,6 +246,8 @@ def login_user() -> Response:
     except Exception as e:
         return jsonify(status=400, message=e)
     else:
+        if len(user) != 1:
+            return jsonify(status=404, message='Invalid email')
         if user[0][2] != user_password_hashed:
             return jsonify(status=400, message='Invalid password')
         else:

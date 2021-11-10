@@ -9,8 +9,13 @@ import {
   RadioGroup,
   Radio,
   FormControlLabel,
+  Paper,
 } from "@mui/material";
-import { getItems, postNewPurchase } from "../services/api";
+import {
+  getItems,
+  postNewPurchase,
+  getFrequentItemsBought,
+} from "../services/api";
 import { makeStyles } from "@material-ui/core";
 
 const useStyles = makeStyles({
@@ -33,12 +38,19 @@ function AddItemPage(props) {
 
   const [itemId, setItemId] = useState(null);
   const [itemList, setItemList] = useState([]);
+  const [freqList, setFreqList] = useState([]);
   const [price, setPrice] = useState();
   const [quantity, setQuantity] = useState();
 
   const handleItemSelection = (e, val) => {
     if (val) {
       setItemId(val.item_id);
+    }
+  };
+
+  const handleOtherItemSelect = (e, val) => {
+    if (val) {
+      setItemId(val);
     }
   };
   const updatePrice = (e) => setPrice(e.target.value);
@@ -55,6 +67,10 @@ function AddItemPage(props) {
   useEffect(async () => {
     await getItems().then((tempArray) => {
       setItemList(tempArray.message);
+    });
+    await getFrequentItemsBought().then((tempArray) => {
+      console.log(tempArray.message);
+      setFreqList(tempArray.message);
     });
   }, []);
 
@@ -77,19 +93,26 @@ function AddItemPage(props) {
 
       <Typography variant="h6">OR </Typography>
 
-      <FormControl component="fieldset">
-        <FormLabel component="legend">Pick a Top Item</FormLabel>
-        <RadioGroup
-          aria-label="gender"
-          name="controlled-radio-buttons-group"
-          value={itemId}
-          onChange={handleItemSelection}
-        >
-          <FormControlLabel value="milk" control={<Radio />} label="Milk" />
-          <FormControlLabel value="bread" control={<Radio />} label="Bread" />
-          <FormControlLabel value="butter" control={<Radio />} label="Butter" />
-        </RadioGroup>
-      </FormControl>
+      <Paper style={{ maxHeight: 200, overflow: "auto" }}>
+        <FormControl component="fieldset">
+          <FormLabel component="legend">Pick a Top Item</FormLabel>
+          <RadioGroup
+            aria-label="gender"
+            name="controlled-radio-buttons-group"
+            onChange={handleOtherItemSelect}
+          >
+            {freqList.map((item) => (
+              <FormControlLabel
+                value={item.item_id}
+                control={<Radio />}
+                label={`${item.item_name.split(":")[0]}
+                :
+                ${item.item_name.split(":")[1]}`}
+              />
+            ))}
+          </RadioGroup>
+        </FormControl>
+      </Paper>
 
       <div className={classes.dateContainer}>
         <Typography variant="h6">Price:</Typography>

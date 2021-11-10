@@ -6,7 +6,6 @@ import OrderPage from "./pages/OrderPage";
 import UserSettingsPage from "./pages/UserSettingsPage";
 import AnalyticsPage from "./pages/AnalyticsPage";
 import PastOrdersPage from "./pages/PastOrdersPage";
-
 import LandingPage from "./pages/LandingPage";
 import RegisterPage from "./pages/RegisterPage";
 import LoginPage from "./pages/LoginPage";

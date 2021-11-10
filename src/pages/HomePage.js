@@ -28,9 +28,10 @@ function HomePage() {
 
   const [orderId, setorderId] = useState(null);
   const [currentUser, setCurrentUser] = useState("");
+  const [currentUserId, setCurrentUserId] = useState(-1);
 
   const createNewOrder = () => {
-    postNewOrder().then((tempVar) => setorderId(tempVar.message));
+    postNewOrder(currentUserId).then((tempVar) => setorderId(tempVar.message));
   };
 
   useEffect(() => {
@@ -38,6 +39,22 @@ function HomePage() {
       navigate("/login");
     } else {
       setCurrentUser(window.sessionStorage.getItem("currentUser"));
+      
+      const requestOptions = {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: currentUser,
+        }),
+      };
+  
+      fetch("/api/get/user", requestOptions)
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.status === 200) {
+            setCurrentUserId(data.message['user_id'])
+          }
+        });
     }
   }, []);
 

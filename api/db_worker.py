@@ -102,7 +102,7 @@ class Worker:
     # Delete rows from the database 
     def delete_from_users(self, email) -> None:
         self._cur.execute('''DELETE FROM Users
-                            WHERE email = {};'''.format(email))
+                            WHERE email = \'{}\';'''.format(email))
         self._con.commit()
 
     # Integrate into your application both of the advanced SQL queries you developed in stage 3

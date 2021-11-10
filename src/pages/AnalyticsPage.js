@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { getMaxPricePurchases } from "../services/api";
 import {
   List,
@@ -9,6 +9,7 @@ import {
   Paper,
 } from "@mui/material";
 import { makeStyles } from "@material-ui/core";
+import { useNavigate } from 'react-router-dom';
 
 const useStyles = makeStyles({
   root: {
@@ -32,13 +33,22 @@ const useStyles = makeStyles({
 
 function AnalyticsPage() {
   const classes = useStyles();
+  const navigate = useNavigate();
+  
   const [maxPricePurchases, setMaxPricePurchases] = React.useState([]);
+  const [currentUser, setCurrentUser] = useState("");
 
   useEffect(() => {
-    getMaxPricePurchases().then((tempArray) => {
-      console.log(tempArray.message);
-      setMaxPricePurchases(tempArray.message);
-    });
+    if (window.sessionStorage.getItem("currentUser") === null) {
+      navigate("/login");
+    } else {
+      setCurrentUser(window.sessionStorage.getItem("currentUser"));
+
+      getMaxPricePurchases().then((tempArray) => {
+        console.log(tempArray.message);
+        setMaxPricePurchases(tempArray.message);
+      });
+    }
   }, []);
 
   return (

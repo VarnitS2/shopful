@@ -1,3 +1,4 @@
+import hashlib
 from flask import request
 from flask.json import jsonify
 from flask.wrappers import Response
@@ -12,10 +13,6 @@ TABLES = ['Items', 'Markets', 'Orders', 'Purchases', 'Users']
 @app.route('/api/hello')
 def hello() -> Response:
     return jsonify(status=200, message='Hello, world!')
-
-@app.route('/api/get/user')
-def get_user() -> Response:
-    return jsonify(status=200, message=_db_worker.select_condition_from_table('Users', 'user_id', 500)[0])
 
 @app.route('/api/get/table', methods=['POST'])
 def get_table() -> Response:
@@ -102,6 +99,29 @@ def get_order_id() -> Response:
                 'market_id': order[0][5],
             })
 
+@app.route('/api/search/order', methods=['POST'])
+def search_orders() -> Response:
+    user_id = request.get_json()['user_id']
+    start_date = request.get_json()['start_date']
+    end_date = request.get_json()['end_date']
+
+    try:
+        orders = _db_worker.get_orders_from_time_period(user_id, start_date, end_date)
+    except Exception as e:
+        return jsonify(status=400, message=e)
+    else:
+        if len(orders) == 0:
+            return jsonify(status=404, message='No orders found for the provided constraints')
+        else:
+            return jsonify(status=200, message=[{
+                'order_id': order[0],
+                'purchase_date': order[1],
+                'notes': order[2],
+                'total_spent': order[3],
+                'user_id': order[4],
+                'market_id': order[5],
+            } for order in orders])
+
 @app.route('/api/update/order', methods=['POST'])
 def update_order() -> Response:
     order_id = request.get_json()['order_id']
@@ -161,6 +181,7 @@ def get_purchases() -> Response:
             'purchase_id': purchase[0],
             'order_id': purchase[1],
             'item_id': purchase[2],
+            'item_name': _db_worker.select_condition_from_table('Items', 'item_id', purchase[2])[0][1],
             'price': purchase[3],
             'quantity': purchase[4],
         } for purchase in purchases])
@@ -189,6 +210,77 @@ def getFrequentlyBoughtItems() -> Response:
             'quantity': purchase[1],
             'user_id': purchase[2],
         } for purchase in frequent_purchases])
+@app.route('/api/add/user', methods=['POST'])
+def add_user() -> Response:
+    username = request.get_json()['username']
+    email = request.get_json()['email']
+    user_password = request.get_json()['user_password']
+    age = request.get_json()['age']
+
+    user_password_hashed = hashlib.sha224(user_password.encode('ascii')).hexdigest()
+
+    if len(_db_worker.get_user(email)) > 0:
+        return jsonify(status=400, message='Email already exists in database')
+
+    try:
+        _db_worker.add_to_users(username, email, user_password_hashed, age)
+    except Exception as e:
+        return jsonify(status=400, message=e)
+    else:
+        return jsonify(status=200, message=_db_worker.get_last_insert_id('Users', 'user_id'))
+
+@app.route('/api/get/user', methods=['POST'])
+def get_user() -> Response:
+    email = request.get_json()['email']
+
+    try:
+        user = _db_worker.select_condition_from_table('Users', 'email', email)
+    except Exception as e:
+        return jsonify(status=400, message=e)
+    else:
+        if len(user) == 0:
+            return jsonify(status=404, message='Invalid email')
+        else:
+            return jsonify(status=200, message={
+                'user_id': user[0][0],
+                'username': user[0][1],
+                'email': user[0][3],
+                'age': user[0][4],
+            })
+
+@app.route('/api/login/user', methods=['POST'])
+def login_user() -> Response:
+    email = request.get_json()['email']
+    user_password = request.get_json()['user_password']
+    user_password_hashed = hashlib.sha224(user_password.encode('ascii')).hexdigest()
+
+    try:
+        user = _db_worker.get_user(email)
+    except Exception as e:
+        return jsonify(status=400, message=e)
+    else:
+        if user[0][2] != user_password_hashed:
+            return jsonify(status=400, message='Invalid password')
+        else:
+            return jsonify(status=200, message='Login successful')
+
+@app.route('/api/delete/user', methods=['POST'])
+def delete_user() -> Response:
+    email = request.get_json()['email']
+    user_password = request.get_json()['user_password']
+    user_password_hashed = hashlib.sha224(user_password.encode('ascii')).hexdigest()
+
+    try:
+        user = _db_worker.get_user(email)
+
+        if user[0][2] != user_password_hashed:
+            return jsonify(status=400, message='Invalid password')
+        else:
+            _db_worker.delete_from_users(email)
+    except Exception as e:
+        return jsonify(status=400, message=e)
+    else:
+        return jsonify(status=200, message='User deleted successfully')
 
 @app.route('/api/get/max-price-per-user', methods=['POST'])
 def get_analytics_max_price_per_user() -> Response:

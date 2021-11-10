@@ -61,6 +61,7 @@ function OrderPage() {
   const classes = useStyles();
   const navigate = useNavigate();
 
+  const [currentUser, setCurrentUser] = useState("");
   const [orderDate, setOrderDate] = useState(new Date());
   const [marketList, setMarketList] = React.useState([]);
   const [purchasesList, setPurchasesList] = React.useState([]);
@@ -100,14 +101,22 @@ function OrderPage() {
 
   const saveOrder = () => {
     updateOrder(orderId, orderDate, marketId, notes, total).then(() =>
-      navigate(`/`)
+      navigate(`/homepage`)
     );
     console.log(orderDate, marketId, notes, total);
   };
 
   const goBack = () => {
-    deleteOrder(orderId).then(() => navigate(`/`));
+    deleteOrder(orderId).then(() => navigate(`/homepage`));
   };
+
+  useEffect(() => {
+    if (window.sessionStorage.getItem("currentUser") === null) {
+      navigate("/login");
+    } else {
+      setCurrentUser(window.sessionStorage.getItem("currentUser"));
+    }
+  }, []);
 
   useEffect(async () => {
     await getPurchases(orderId).then((tempArray) =>

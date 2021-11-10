@@ -210,6 +210,7 @@ def getFrequentlyBoughtItems() -> Response:
             'quantity': purchase[1],
             'user_id': purchase[2],
         } for purchase in frequent_purchases])
+
 @app.route('/api/add/user', methods=['POST'])
 def add_user() -> Response:
     username = request.get_json()['username']
@@ -234,7 +235,7 @@ def get_user() -> Response:
     email = request.get_json()['email']
 
     try:
-        user = _db_worker.select_condition_from_table('Users', 'email', email)
+        user = _db_worker.get_user(email)
     except Exception as e:
         return jsonify(status=400, message=e)
     else:

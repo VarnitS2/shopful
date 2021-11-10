@@ -31,7 +31,7 @@ function HomePage() {
   const [currentUserId, setCurrentUserId] = useState(-1);
 
   const createNewOrder = () => {
-    postNewOrder(currentUserId).then((tempVar) => setorderId(tempVar.message));
+    postNewOrder().then((tempVar) => setorderId(tempVar.message));
   };
 
   useEffect(() => {

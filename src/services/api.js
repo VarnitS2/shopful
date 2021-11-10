@@ -22,13 +22,13 @@ async function getMarkets() {
   return await response.json();
 }
 
-async function postNewOrder(user_id) {
+async function postNewOrder() {
   const response = await fetch(
     `/api/add/order`,
     requestOptions("POST", {
       notes: null,
       total_spent: 0,
-      user_id: user_id,
+      user_id: null,
       market_id: null,
     })
   );

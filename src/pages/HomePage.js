@@ -31,20 +31,21 @@ function HomePage() {
   const [currentUserId, setCurrentUserId] = useState(-1);
 
   const createNewOrder = () => {
-    postNewOrder().then((tempVar) => setorderId(tempVar.message));
+    postNewOrder(currentUserId).then((tempVar) => setorderId(tempVar.message));
   };
 
   useEffect(() => {
     if (window.sessionStorage.getItem("currentUser") === null) {
       navigate("/login");
     } else {
-      setCurrentUser(window.sessionStorage.getItem("currentUser"));
+      var userEmail = window.sessionStorage.getItem("currentUser");
+      setCurrentUser(userEmail);
       
       const requestOptions = {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          email: currentUser,
+          email: userEmail,
         }),
       };
   

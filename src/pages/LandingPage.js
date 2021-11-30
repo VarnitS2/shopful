@@ -4,27 +4,30 @@ import { useNavigate } from "react-router-dom";
 
 const useStyles = makeStyles({
   root: {
+    height: "100vh",
     fontFamily: "BlinkMacSystemFont",
+    display: "flex",
+    flexDirection: "column",
   },
   headerColumn: {
     display: "flex",
     flexDirection: "column",
+    flex: "0.7",
   },
   budgetBuddyHeader: {
     display: "flex",
     justifyContent: "center",
-    marginTop: "300px",
     fontSize: "80px",
   },
   budgetBuddyDesc: {
     display: "flex",
     justifyContent: "center",
-    marginTop: "50px",
     fontSize: "40px",
   },
   topNavBar: {
     display: "flex",
     justifyContent: "flex-end",
+    flex: "0.3",
   },
   signUpButton: {
     width: "150px",

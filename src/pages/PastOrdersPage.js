@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { TextField, Button, Grid } from "@mui/material";
+import React, { useState, useEffect } from "react";
+import { Typography, TextField, Button, Grid } from "@mui/material";
 import AdapterDateFns from "@mui/lab/AdapterDateFns";
 import LocalizationProvider from "@mui/lab/LocalizationProvider";
 import Box from "@mui/material/Box";
@@ -23,13 +23,40 @@ const useStyles = makeStyles({
 function PastOrdersPage() {
   const classes = useStyles();
   const navigate = useNavigate();
-  const [showList, setShowList] = React.useState([null]);
+  const [currentUser, setCurrentUser] = useState("");
+  const [currentUserId, setCurrentUserId] = useState(-1);
   const [dateRange, setDateRange] = React.useState([null, null]);
 
-  const [orderList, setOrderList] = useState([]);
+  const [orderList, setOrderList] = useState(null);
+  const [buttonFlag, setButtonFlag] = useState(false);
+
+  useEffect(() => {
+    if (window.sessionStorage.getItem("currentUser") === null) {
+      navigate("/login");
+    } else {
+      var userEmail = window.sessionStorage.getItem("currentUser");
+      setCurrentUser(userEmail);
+
+      const requestOptions = {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: userEmail,
+        }),
+      };
+
+      fetch("/api/get/user", requestOptions)
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.status === 200) {
+            setCurrentUserId(data.message["user_id"]);
+          }
+        });
+    }
+  }, []);
 
   const createPastList = async () => {
-    console.log(dateRange);
+    setButtonFlag(true);
     // TODO: get the list of the orders from database
     await getPastOrdersBetween(
       dateRange[0].toISOString().split("T")[0] +
@@ -38,10 +65,13 @@ function PastOrdersPage() {
       dateRange[1].toISOString().split("T")[0] +
         " " +
         dateRange[1].toTimeString().split(" ")[0],
-      3
-    ).then((responseArray) => {
-      console.log(responseArray.message);
-      setOrderList(responseArray.message);
+      currentUserId
+    ).then((response) => {
+      if (response.status === 200) {
+        setOrderList(response.message);
+      } else {
+        setOrderList(null);
+      }
     });
   };
 
@@ -81,6 +111,10 @@ function PastOrdersPage() {
               />
             ))}
           </Grid>
+        </div>
+      ) : buttonFlag ? (
+        <div className={classes.root}>
+          <Typography>No orders in this date range</Typography>
         </div>
       ) : null}
     </div>

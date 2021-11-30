@@ -138,7 +138,15 @@ def update_order() -> Response:
     except Exception as e:
         return jsonify(status=400, message=e)
     else:
-        return jsonify(status=200, message='Order updated successfully')
+        order = _db_worker.select_condition_from_table('Orders', 'order_id', order_id)
+        return jsonify(status=200, message={
+            'order_id': tuple(order[0])[0],
+            'purchase_date': tuple(order[0])[1],
+            'notes': tuple(order[0])[2],
+            'total_spent': tuple(order[0])[3],
+            'user_id': tuple(order[0])[4],
+            'market_id': tuple(order[0])[5],
+        })
 
 @app.route('/api/delete/order', methods=['POST'])
 def delete_order() -> Response:
@@ -210,6 +218,7 @@ def getFrequentlyBoughtItems() -> Response:
             'quantity': purchase[1],
             'user_id': purchase[2],
         } for purchase in frequent_purchases])
+
 @app.route('/api/add/user', methods=['POST'])
 def add_user() -> Response:
     username = request.get_json()['username']
@@ -234,7 +243,7 @@ def get_user() -> Response:
     email = request.get_json()['email']
 
     try:
-        user = _db_worker.select_condition_from_table('Users', 'email', email)
+        user = _db_worker.get_user(email)
     except Exception as e:
         return jsonify(status=400, message=e)
     else:

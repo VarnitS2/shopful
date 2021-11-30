@@ -22,13 +22,13 @@ async function getMarkets() {
   return await response.json();
 }
 
-async function postNewOrder(user_id) {
+async function postNewOrder(currentUserId) {
   const response = await fetch(
     `/api/add/order`,
     requestOptions("POST", {
       notes: null,
       total_spent: 0,
-      user_id: user_id,
+      user_id: currentUserId,
       market_id: null,
     })
   );
@@ -112,7 +112,7 @@ async function getFrequentItemsBought() {
 async function getPastOrdersBetween(start_date, end_date, user_id) {
   const response = await fetch(
     `/api/search/order`,
-    requestOptions("POST", { start_date, end_date, user_id })
+    requestOptions("POST", { user_id, start_date, end_date })
   );
   return await response.json();
 }

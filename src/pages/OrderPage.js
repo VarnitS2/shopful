@@ -82,12 +82,7 @@ function OrderPage() {
   };
 
   const handleDateChange = (date) => {
-    var newdate =
-      date.toISOString().split("T")[0] +
-      " " +
-      date.toTimeString().split(" ")[0];
-    console.log(newdate);
-    setOrderDate(newdate);
+    setOrderDate(date);
   };
 
   const handleNotesChange = (e) => setNotes(e.target.value);
@@ -100,10 +95,14 @@ function OrderPage() {
   };
 
   const saveOrder = () => {
-    updateOrder(orderId, orderDate, marketId, notes, total).then(() =>
+    var formattedDate =
+      orderDate.toISOString().split("T")[0] +
+      " " +
+      orderDate.toTimeString().split(" ")[0];
+
+    updateOrder(orderId, formattedDate, marketId, notes, total).then(() =>
       navigate(`/homepage`)
     );
-    console.log(orderDate, marketId, notes, total);
   };
 
   const goBack = () => {

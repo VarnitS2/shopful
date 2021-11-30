@@ -38,13 +38,14 @@ function HomePage() {
     if (window.sessionStorage.getItem("currentUser") === null) {
       navigate("/login");
     } else {
-      setCurrentUser(window.sessionStorage.getItem("currentUser"));
+      var userEmail = window.sessionStorage.getItem("currentUser");
+      setCurrentUser(userEmail);
       
       const requestOptions = {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          email: currentUser,
+          email: userEmail,
         }),
       };
   

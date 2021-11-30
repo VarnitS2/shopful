@@ -36,6 +36,7 @@ function OrderItem(props) {
   const classes = useStyles();
   const [purchasesList, setPurchasesList] = React.useState([]);
 
+  //TODO: Implement functionality to add the Purchase items in a list
   // useEffect(async () => {
   //   await getPurchases(props.order_id).then((tempArray) =>
   //     setPurchasesList(tempArray.message)

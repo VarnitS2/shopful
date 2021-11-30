@@ -56,12 +56,10 @@ function LandingPage() {
       </div>
 
       <div className={classes.headerColumn}>
-        <Typography className={classes.budgetBuddyHeader}>
-          Shopful
-        </Typography>
+        <Typography className={classes.budgetBuddyHeader}>Shopful</Typography>
 
         <Typography className={classes.budgetBuddyDesc}>
-          Shopful description
+          Shop Mindfully. Shop Happily.
         </Typography>
       </div>
     </div>

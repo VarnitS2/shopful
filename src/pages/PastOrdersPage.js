@@ -7,7 +7,7 @@ import StaticDateRangePicker from "@mui/lab/StaticDateRangePicker";
 import { makeStyles } from "@material-ui/core";
 import OrderItem from "../components/OrderItem";
 import { useNavigate } from "react-router-dom";
-import { getPastOrdersBetween } from "../services/api";
+import { getPastOrdersBetween, getUserID } from "../services/api";
 
 const useStyles = makeStyles({
   root: {
@@ -37,21 +37,11 @@ function PastOrdersPage() {
       var userEmail = window.sessionStorage.getItem("currentUser");
       setCurrentUser(userEmail);
 
-      const requestOptions = {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          email: userEmail,
-        }),
-      };
-
-      fetch("/api/get/user", requestOptions)
-        .then((response) => response.json())
-        .then((data) => {
-          if (data.status === 200) {
-            setCurrentUserId(data.message["user_id"]);
-          }
-        });
+      getUserID(userEmail).then((data) => {
+        if (data.status === 200) {
+          setCurrentUserId(data.message["user_id"]);
+        }
+      });
     }
   }, []);
 

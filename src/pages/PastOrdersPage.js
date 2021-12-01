@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { Typography, TextField, Button, Grid } from "@mui/material";
+import { Typography, TextField, Grid } from "@mui/material";
+import { Button } from "@material-ui/core";
 import AdapterDateFns from "@mui/lab/AdapterDateFns";
 import LocalizationProvider from "@mui/lab/LocalizationProvider";
 import Box from "@mui/material/Box";
@@ -17,6 +18,21 @@ const useStyles = makeStyles({
     flexDirection: "column",
     padding: "30px",
     alignItems: "center",
+    fontFamily: "BlinkMacSystemFont",
+  },
+  root2: {
+    display: "flex",
+    width: "100%",
+    padding: "30px",
+    justifyContent: "center",
+  },
+  backButton: {
+    borderRadius: "100px",
+    border: "1px solid rgba(0, 0, 0, 0.23)",
+    color: "black",
+    margin: "20px",
+    width: "150px",
+    height: "50px",
   },
 });
 
@@ -74,10 +90,16 @@ function PastOrdersPage() {
       }
     });
   };
+  const handleBackButtonPressed = () => {
+    navigate("/homepage");
+  };
 
   return (
-    <div className={classes.root}>
-      <div>
+    <div>
+      <Button className={classes.backButton} onClick={handleBackButtonPressed}>
+        Back
+      </Button>
+      <div className={classes.root}>
         <h1>Pick a Date Range!</h1>
         <LocalizationProvider dateAdapter={AdapterDateFns}>
           <StaticDateRangePicker
@@ -101,8 +123,14 @@ function PastOrdersPage() {
         </Button>
       </div>
       {orderList ? (
-        <div className={classes.root}>
-          <Grid>
+        <div className={classes.root2}>
+          <Grid
+            style={{
+              display: "grid",
+              gridAutoFlow: "column",
+              columnGap: "20px",
+            }}
+          >
             {orderList.map((item) => (
               <OrderItem
                 order_id={item.order_id}

@@ -9,6 +9,7 @@ import {
   ListItemText,
   Autocomplete,
   Box,
+  Card,
   Modal,
 } from "@mui/material";
 import PurchaseItem from "../components/PurchaseItem";
@@ -34,11 +35,14 @@ const useStyles = makeStyles({
     alignContent: "space-evenly",
     flexDirection: "column",
     padding: "30px",
+    height: "100vh",
+    fontFamily: "BlinkMacSystemFont",
   },
   dateContainer: {
     display: "flex",
     justifyContent: "space-evenly",
     float: "left",
+    marginBottom: "24px",
   },
   modal: {
     position: "absolute",
@@ -99,10 +103,11 @@ function OrderPage() {
       orderDate.toISOString().split("T")[0] +
       " " +
       orderDate.toTimeString().split(" ")[0];
-
-    updateOrder(orderId, formattedDate, marketId, notes, total).then(() =>
-      navigate(`/homepage`)
-    );
+    if (formattedDate && marketId && total) {
+      updateOrder(orderId, formattedDate, marketId, notes, total).then(() =>
+        navigate(`/homepage`)
+      );
+    }
   };
 
   const goBack = () => {
@@ -138,43 +143,21 @@ function OrderPage() {
     <div className={classes.root}>
       <h1>NEW ORDER: {orderId.toString()} </h1>
 
-      <Grid>
-        <Typography variant="h6">Purchases</Typography>
-        <List>
-          <ListItem>
-            <ListItemText primary="Item Id" />
-            <ListItemText primary="Price" />
-            <ListItemText primary="Quantity" />
-          </ListItem>
-          {purchasesList.map((item) => (
-            <PurchaseItem itemObj={item} />
-          ))}
-        </List>
-      </Grid>
-
-      <div>
-        <Button onClick={handleOpen}>Add Item</Button>
-        <Modal
-          open={open}
-          onClose={handleClose}
-          aria-labelledby="modal-modal-title"
-          aria-describedby="modal-modal-description"
-        >
-          <Box className={classes.modal}>
-            <AddItemPage orderid={orderId} onClick={handleClose} />
-          </Box>
-        </Modal>
-      </div>
-
-      <Typography variant="h6">Total: ${total} </Typography>
-
       <div className={classes.dateContainer}>
-        <Typography variant="h6">Pick a Date:</Typography>
+        <Typography style={{ alignSelf: "flex-end" }} variant="h6">
+          Pick a Date:
+        </Typography>
         <MuiPickersUtilsProvider utils={DateFnsUtils}>
-          <KeyboardDatePicker value={orderDate} onChange={handleDateChange} />
+          <KeyboardDatePicker
+            style={{ flexDirection: "row" }}
+            value={orderDate}
+            onChange={handleDateChange}
+          />
         </MuiPickersUtilsProvider>
 
-        <Typography variant="h6">Pick a Market:</Typography>
+        <Typography style={{ alignSelf: "flex-end" }} variant="h6">
+          Pick a Market:
+        </Typography>
         <Autocomplete
           disablePortal
           id="combo-box-demo"
@@ -186,6 +169,46 @@ function OrderPage() {
           renderInput={(params) => <TextField {...params} label="Market" />}
         />
       </div>
+
+      <Card>
+        <Grid>
+          <Typography variant="h6">Purchases</Typography>
+          <List style={{ textAlignLast: "center" }}>
+            <ListItem>
+              <ListItemText primary="Item Id" />
+              <ListItemText primary="Price" />
+              <ListItemText primary="Quantity" />
+            </ListItem>
+            {purchasesList.map((item) => (
+              <PurchaseItem itemObj={item} />
+            ))}
+          </List>
+        </Grid>
+      </Card>
+
+      <div>
+        <Button onClick={handleOpen}>Add Item</Button>
+        <Modal
+          open={open}
+          onClose={handleClose}
+          aria-labelledby="modal-modal-title"
+          aria-describedby="modal-modal-description"
+        >
+          <Box className={classes.modal}>
+            <AddItemPage
+              orderid={orderId}
+              lastItem={
+                purchasesList.length > 0
+                  ? purchasesList[purchasesList.length - 1]
+                  : -1
+              }
+              onClick={handleClose}
+            />
+          </Box>
+        </Modal>
+      </div>
+
+      <Typography variant="h6">Total: ${total} </Typography>
 
       <TextField
         id="outlined"

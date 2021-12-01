@@ -10,6 +10,7 @@ import {
   Radio,
   FormControlLabel,
   Paper,
+  Divider,
 } from "@mui/material";
 import {
   getItems,
@@ -95,9 +96,9 @@ function AddItemPage(props) {
             recommend:{" "}
           </Typography>
           <Typography variant="h6">{recommendedItem.item_name} </Typography>
+          <Divider />
         </div>
       ) : null}
-
       <div className={classes.dateContainer}>
         <Typography variant="h6">Search for an item:</Typography>
         <Autocomplete

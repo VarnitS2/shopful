@@ -115,6 +115,7 @@ function PastOrdersPage() {
       {orderList ? (
         <div className={classes.root2}>
           <Grid
+            wrap={"wrap"}
             style={{
               display: "grid",
               gridAutoFlow: "column",

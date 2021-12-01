@@ -125,5 +125,18 @@ class Worker:
                             LIMIT 15;''')
         return self._cur.fetchall()
 
+    # TODO: Implement me
+    def run_stored_procedure(self, item_id) -> list:
+        self._cur.execute('''SET @itemNum = {};'''.format(item_id))
+        self._cur.execute('''CALL frequent(@itemNum, @name);''')
+        
+        self._cur.execute('''SELECT @itemNum;''')
+        new_item_id = self._cur.fetchall()
+
+        self._cur.execute('''SELECT @name;''')
+        new_item_name = self._cur.fetchall()
+
+        return new_item_id, new_item_name
+
     def close_connection(self) -> None:
         self._con.close()

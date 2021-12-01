@@ -306,3 +306,19 @@ def get_analytics_max_price_per_user() -> Response:
             'item_name': _db_worker.select_condition_from_table('Items', 'item_id', purchase[1])[0][1],
             'user_id': purchase[2],
             } for purchase in max_purchases])
+
+@app.route('/api/get-items-frequently-bought-together', methods=['POST'])
+def get_items_frequently_bought_together() -> Response:
+    item_id = request.get_json()['item_id']
+
+    try:
+        new_item_id, new_item_name = _db_worker.run_stored_procedure(item_id)
+        new_item_id = tuple(new_item_id[0])[0]
+        new_item_name = tuple(new_item_name[0])[0]
+    except Exception as e:
+        return jsonify(status=400, message=e)
+    else:
+        return jsonify(status=200, message={
+            'item_id': new_item_id,
+            'item_name': new_item_name
+        })

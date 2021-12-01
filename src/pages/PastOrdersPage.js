@@ -17,12 +17,19 @@ const useStyles = makeStyles({
     flexDirection: "column",
     padding: "30px",
     alignItems: "center",
+    fontFamily: "BlinkMacSystemFont",
   },
   root2: {
     display: "flex",
     width: "100%",
     padding: "30px",
     justifyContent: "center",
+  },
+  backButton: {
+    borderRadius: "100px",
+    border: "1px solid rgba(0, 0, 0, 0.23)",
+    color: "black",
+    margin: "20px",
   },
 });
 
@@ -80,10 +87,16 @@ function PastOrdersPage() {
       }
     });
   };
+  const handleBackButtonPressed = () => {
+    navigate("/homepage");
+  };
 
   return (
-    <div className={classes.root}>
-      <div>
+    <div>
+      <Button className={classes.backButton} onClick={handleBackButtonPressed}>
+        Back
+      </Button>
+      <div className={classes.root}>
         <h1>Pick a Date Range!</h1>
         <LocalizationProvider dateAdapter={AdapterDateFns}>
           <StaticDateRangePicker

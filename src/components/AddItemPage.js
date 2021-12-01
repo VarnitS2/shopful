@@ -25,11 +25,12 @@ const useStyles = makeStyles({
     alignContent: "space-evenly",
     flexDirection: "column",
     padding: "30px",
+    fontFamily: "BlinkMacSystemFont",
   },
   dateContainer: {
     display: "flex",
     justifyContent: "space-evenly",
-    float: "left",
+    flexDirection: "column",
   },
 });
 
@@ -84,7 +85,7 @@ function AddItemPage(props) {
           disablePortal
           id="combo-box-demo"
           options={itemList}
-          sx={{ width: 300 }}
+          sx={{ width: "100%" }}
           onChange={handleItemSelection}
           getOptionLabel={(option) => option.item_name}
           renderInput={(params) => <TextField {...params} label="Item" />}
@@ -93,9 +94,9 @@ function AddItemPage(props) {
 
       <Typography variant="h6">OR </Typography>
 
+      <Typography variant="h6">Pick a top item:</Typography>
       <Paper style={{ maxHeight: 200, overflow: "auto" }}>
         <FormControl component="fieldset">
-          <FormLabel component="legend">Pick a Top Item</FormLabel>
           <RadioGroup
             aria-label="gender"
             name="controlled-radio-buttons-group"

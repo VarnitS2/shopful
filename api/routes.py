@@ -313,6 +313,9 @@ def get_items_frequently_bought_together() -> Response:
 
     try:
         new_item_id, new_item_name = _db_worker.run_stored_procedure(item_id)
+        if len(new_item_id) == 0 or len(new_item_name) == 0:
+            return jsonify(status=404, message='Invalid item')
+
         new_item_id = tuple(new_item_id[0])[0]
         new_item_name = tuple(new_item_name[0])[0]
     except Exception as e:
@@ -322,3 +325,51 @@ def get_items_frequently_bought_together() -> Response:
             'item_id': new_item_id,
             'item_name': new_item_name
         })
+
+@app.route('/api/get-item-price-history', methods=['POST'])
+def get_item_price_history() -> Response:
+    item_id = request.get_json()['item_id']
+
+    try:
+        history = _db_worker.get_item_price_history(item_id)
+
+        if len(history) == 0:
+            return jsonify(status=404, message='Invalid item')
+    except Exception as e:
+        return jsonify(status=400, message=e)
+    else:
+        months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+        data = []
+
+        for data_point in history:
+            date = str(data_point[0]).split(' ')[0]
+            formatted_date = months[int(date.split('-')[1]) - 1] + ' ' + date.split('-')[2]
+
+            data.append({
+                'date': formatted_date,
+                'price': data_point[1]
+            })
+
+        return jsonify(status=200, message=data)
+
+@app.route('/api/get-user-total-spent', methods=['POST'])
+def get_user_total_spent() -> Response:
+    user_id = request.get_json()['user_id']
+
+    try:
+        total_spent = tuple(_db_worker.get_user_total_spent(user_id)[0])[0]
+    except Exception as e:
+        return jsonify(status=400, message=e)
+    else:
+        return jsonify(status=200, message=str(total_spent))
+
+@app.route('/api/get-user-large-orders', methods=['POST'])
+def get_user_large_orders() -> Response:
+    user_id = request.get_json()['user_id']
+
+    try:
+        large_orders = tuple(_db_worker.get_user_large_orders(user_id)[0])[0]
+    except Exception as e:
+        return jsonify(status=400, message=e)
+    else:
+        return jsonify(status=200, message=str(large_orders))

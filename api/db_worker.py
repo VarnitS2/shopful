@@ -125,7 +125,6 @@ class Worker:
                             LIMIT 15;''')
         return self._cur.fetchall()
 
-    # TODO: Implement me
     def run_stored_procedure(self, item_id) -> list:
         self._cur.execute('''SET @itemNum = {};'''.format(item_id))
         self._cur.execute('''CALL frequent(@itemNum, @name);''')
@@ -137,6 +136,28 @@ class Worker:
         new_item_name = self._cur.fetchall()
 
         return new_item_id, new_item_name
+
+    def get_item_price_history(self, item_id) -> list:
+        self._cur.execute('''SELECT purchase_date, price
+                            FROM Purchases NATURAL JOIN Orders
+                            WHERE item_id = {}
+                            ORDER BY purchase_date ASC;'''.format(item_id))
+
+        return self._cur.fetchall()
+
+    def get_user_total_spent(self, user_id) -> list:
+        self._cur.execute('''SELECT total_spent
+                            FROM Users
+                            WHERE user_id = {}'''.format(user_id))
+
+        return self._cur.fetchall()
+
+    def get_user_large_orders(self, user_id) -> list:
+        self._cur.execute('''SELECT large_orders
+                            FROM Users
+                            WHERE user_id = {}'''.format(user_id))
+
+        return self._cur.fetchall()
 
     def close_connection(self) -> None:
         self._con.close()

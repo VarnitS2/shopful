@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { Typography, TextField, Button, Grid } from "@mui/material";
+import { Typography, TextField, Grid } from "@mui/material";
+import { Button } from "@material-ui/core";
 import AdapterDateFns from "@mui/lab/AdapterDateFns";
 import LocalizationProvider from "@mui/lab/LocalizationProvider";
 import Box from "@mui/material/Box";
@@ -30,6 +31,8 @@ const useStyles = makeStyles({
     border: "1px solid rgba(0, 0, 0, 0.23)",
     color: "black",
     margin: "20px",
+    width: "150px",
+    height: "50px",
   },
 });
 

@@ -12,7 +12,10 @@ import Alert from "@material-ui/lab/Alert";
 
 const useStyles = makeStyles({
   root: {
+    height: "100vh",
     fontFamily: "BlinkMacSystemFont",
+    display: "flex",
+    flexDirection: "column",
   },
   displayColumn: {
     display: "flex",
@@ -21,19 +24,18 @@ const useStyles = makeStyles({
   displayCenter: {
     display: "flex",
     justifyContent: "center",
+    flexDirection: "row",
   },
   alertContainer: {
     display: "flex",
     justifyContent: "center",
-    position: "absolute",
-    marginTop: "150px",
-    marginLeft: "80px"
+    margin: "auto",
   },
   loginText: {
     display: "flex",
     justifyContent: "center",
     fontSize: "40px",
-    marginTop: "300px",
+    marginTop: "50px",
   },
   textFieldItemOne: {
     width: "350px",
@@ -54,13 +56,13 @@ const useStyles = makeStyles({
     justifyContent: "center",
     fontSize: "20px",
     color: "gray",
-    marginTop: "388px",
+    marginTop: "64px",
   },
   linkContainer: {
-    marginTop: "390.7px",
-    marginLeft: "6px",
+    marginTop: "66px",
     fontSize: "20px",
     color: "gray",
+    marginLeft: "5px",
   },
 });
 
@@ -85,7 +87,7 @@ function LoginPage() {
   const clearFields = () => {
     setEmail("");
     setPassword("");
-  }
+  };
 
   const handleLoginButtonPressed = () => {
     const requestOptions = {
@@ -101,7 +103,7 @@ function LoginPage() {
       .then((response) => response.json())
       .then((data) => {
         if (data.status === 200) {
-          window.sessionStorage.setItem('currentUser', email);
+          window.sessionStorage.setItem("currentUser", email);
           clearFields();
           navigate("/homepage");
         } else {
@@ -109,7 +111,7 @@ function LoginPage() {
           setErrorFlag(true);
         }
       });
-  }
+  };
 
   return (
     <div className={classes.root}>
@@ -161,7 +163,7 @@ function LoginPage() {
 
           <div className={classes.displayCenter}>
             <Typography className={classes.bottomText}>
-              Don't have an account? Sign up
+              Don't have an account?
             </Typography>
 
             <Link
@@ -170,7 +172,7 @@ function LoginPage() {
               color="inherit"
               underline="none"
             >
-              here
+              Sign up here
             </Link>
           </div>
         </div>

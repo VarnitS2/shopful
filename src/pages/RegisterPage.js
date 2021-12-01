@@ -12,7 +12,10 @@ import Alert from "@material-ui/lab/Alert";
 
 const useStyles = makeStyles({
   root: {
+    height: "100vh",
     fontFamily: "BlinkMacSystemFont",
+    display: "flex",
+    flexDirection: "column",
   },
   displayColumn: {
     display: "flex",
@@ -20,20 +23,19 @@ const useStyles = makeStyles({
   },
   displayCenter: {
     display: "flex",
+    flexDirection: "row",
     justifyContent: "center",
   },
   alertContainer: {
     display: "flex",
     justifyContent: "center",
-    position: "absolute",
-    marginTop: "150px",
-    marginLeft: "33px",
+    margin: "auto",
   },
   signUpText: {
     display: "flex",
     justifyContent: "center",
     fontSize: "40px",
-    marginTop: "300px",
+    marginTop: "50px",
   },
   textFieldItemOne: {
     width: "350px",
@@ -54,13 +56,13 @@ const useStyles = makeStyles({
     justifyContent: "center",
     fontSize: "20px",
     color: "gray",
-    marginTop: "260px",
+    marginTop: "64px",
   },
   linkContainer: {
-    marginTop: "262px",
-    marginLeft: "6px",
+    marginTop: "66px",
     fontSize: "20px",
     color: "gray",
+    marginLeft: "5px",
   },
 });
 
@@ -118,7 +120,7 @@ function RegisterPage() {
         username: username,
         email: email,
         user_password: password,
-        age: age
+        age: age,
       }),
     };
 
@@ -212,7 +214,7 @@ function RegisterPage() {
 
           <div className={classes.displayCenter}>
             <Typography className={classes.bottomText}>
-              Already have an account? Login
+              Already have an account?
             </Typography>
 
             <Link
@@ -221,7 +223,7 @@ function RegisterPage() {
               color="inherit"
               underline="none"
             >
-              here
+              Login here
             </Link>
           </div>
         </div>

@@ -150,6 +150,14 @@ async function getUserID(email) {
   return await response.json();
 }
 
+async function getRecommendation(item_id) {
+  const response = await fetch(
+    `/api/get-items-frequently-bought-together`,
+    requestOptions("POST", { item_id })
+  );
+  return await response.json();
+}
+
 export {
   getItems,
   getMarkets,
@@ -166,4 +174,5 @@ export {
   getUserTotalSpent,
   getUserLargeOrders,
   getUserID,
+  getRecommendation,
 };

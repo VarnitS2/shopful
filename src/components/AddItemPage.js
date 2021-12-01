@@ -15,6 +15,7 @@ import {
   getItems,
   postNewPurchase,
   getFrequentItemsBought,
+  getReccomendation,
 } from "../services/api";
 import { makeStyles } from "@material-ui/core";
 
@@ -25,11 +26,12 @@ const useStyles = makeStyles({
     alignContent: "space-evenly",
     flexDirection: "column",
     padding: "30px",
+    fontFamily: "BlinkMacSystemFont",
   },
   dateContainer: {
     display: "flex",
     justifyContent: "space-evenly",
-    float: "left",
+    flexDirection: "column",
   },
 });
 
@@ -41,6 +43,7 @@ function AddItemPage(props) {
   const [freqList, setFreqList] = useState([]);
   const [price, setPrice] = useState();
   const [quantity, setQuantity] = useState();
+  const [recommendedItem, setrecommendedItem] = useState();
 
   const handleItemSelection = (e, val) => {
     if (val) {
@@ -72,11 +75,28 @@ function AddItemPage(props) {
       console.log(tempArray.message);
       setFreqList(tempArray.message);
     });
+    console.log(props.lastItem);
+    if (props.lastItem.item_id > 0) {
+      await getReccomendation(props.lastItem.item_id).then((tempObj) => {
+        setrecommendedItem(tempObj.message);
+        console.log(tempObj.message);
+      });
+    }
   }, []);
 
   return (
     <div className={classes.root}>
-      <h1>ADD ITEM</h1>
+      <h2>ADD ITEM</h2>
+
+      {recommendedItem ? (
+        <div>
+          <Typography style={{ textSize: "20px", color: "gray" }}>
+            Because you picked {props.lastItem.item_name.split(":")[0]} we
+            recommend:{" "}
+          </Typography>
+          <Typography variant="h6">{recommendedItem.item_name} </Typography>
+        </div>
+      ) : null}
 
       <div className={classes.dateContainer}>
         <Typography variant="h6">Search for an item:</Typography>
@@ -84,7 +104,7 @@ function AddItemPage(props) {
           disablePortal
           id="combo-box-demo"
           options={itemList}
-          sx={{ width: 300 }}
+          sx={{ width: "100%" }}
           onChange={handleItemSelection}
           getOptionLabel={(option) => option.item_name}
           renderInput={(params) => <TextField {...params} label="Item" />}
@@ -93,9 +113,9 @@ function AddItemPage(props) {
 
       <Typography variant="h6">OR </Typography>
 
+      <Typography variant="h6">Pick a top item:</Typography>
       <Paper style={{ maxHeight: 200, overflow: "auto" }}>
         <FormControl component="fieldset">
-          <FormLabel component="legend">Pick a Top Item</FormLabel>
           <RadioGroup
             aria-label="gender"
             name="controlled-radio-buttons-group"

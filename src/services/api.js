@@ -109,6 +109,7 @@ async function getFrequentItemsBought() {
   );
   return await response.json();
 }
+
 async function getPastOrdersBetween(start_date, end_date, user_id) {
   const response = await fetch(
     `/api/search/order`,
@@ -117,7 +118,39 @@ async function getPastOrdersBetween(start_date, end_date, user_id) {
   return await response.json();
 }
 
-async function getReccomendation(item_id) {
+async function getItemPriceHistory(item_id) {
+  const response = await fetch(
+    `/api/get-item-price-history`,
+    requestOptions("POST", { item_id })
+  );
+  return await response.json();
+}
+
+async function getUserTotalSpent(user_id) {
+  const response = await fetch(
+    `/api/get-user-total-spent`,
+    requestOptions("POST", { 'user_id': user_id })
+  );
+  return await response.json();
+}
+
+async function getUserLargeOrders(user_id) {
+  const response = await fetch(
+    `/api/get-user-large-orders`,
+    requestOptions("POST", { 'user_id': user_id })
+  );
+  return await response.json();
+}
+
+async function getUserID(email) {
+  const response = await fetch(
+    `/api/get/user`,
+    requestOptions("POST", { email })
+  );
+  return await response.json();
+}
+
+async function getRecommendation(item_id) {
   const response = await fetch(
     `/api/get-items-frequently-bought-together`,
     requestOptions("POST", { item_id })
@@ -137,5 +170,9 @@ export {
   deleteOrder,
   getFrequentItemsBought,
   getPastOrdersBetween,
-  getReccomendation,
+  getItemPriceHistory,
+  getUserTotalSpent,
+  getUserLargeOrders,
+  getUserID,
+  getRecommendation,
 };

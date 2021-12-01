@@ -343,7 +343,7 @@ def get_item_price_history() -> Response:
 
         for data_point in history:
             date = str(data_point[0]).split(' ')[0]
-            formatted_date = months[int(date.split('-')[1]) - 1] + ' ' + date.split('-')[2]
+            formatted_date = months[int(date.split('-')[1]) - 1] + ' ' + date.split('-')[2] + ', ' + date.split('-')[0]
 
             data.append({
                 'date': formatted_date,

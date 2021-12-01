@@ -15,7 +15,7 @@ import {
   getItems,
   postNewPurchase,
   getFrequentItemsBought,
-  getReccomendation,
+  getRecommendation,
 } from "../services/api";
 import { makeStyles } from "@material-ui/core";
 
@@ -77,7 +77,7 @@ function AddItemPage(props) {
     });
     console.log(props.lastItem);
     if (props.lastItem.item_id > 0) {
-      await getReccomendation(props.lastItem.item_id).then((tempObj) => {
+      await getRecommendation(props.lastItem.item_id).then((tempObj) => {
         setrecommendedItem(tempObj.message);
         console.log(tempObj.message);
       });

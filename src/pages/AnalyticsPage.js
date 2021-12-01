@@ -1,81 +1,131 @@
 import React, { useState, useEffect } from "react";
-import { getMaxPricePurchases } from "../services/api";
 import {
-  List,
-  ListItem,
-  ListItemText,
-  Card,
-  CardContent,
-  Paper,
-} from "@mui/material";
-import { makeStyles } from "@material-ui/core";
-import { useNavigate } from 'react-router-dom';
+  getItemPriceHistory,
+  getUserTotalSpent,
+  getUserLargeOrders,
+  getUserID,
+} from "../services/api";
+import { Button, Typography, makeStyles } from "@material-ui/core";
+import { useNavigate } from "react-router-dom";
+import PriceLineChart from "../components/PriceLineChart";
 
 const useStyles = makeStyles({
   root: {
     textAlignLast: "center",
-    width: "80%",
+    fontSize: "52px",
   },
   header: {
     height: "50%",
   },
-  pastButton: {
-    borderRadius: "100px",
+  midRowContainer: {
+    display: "flex",
+    justifyContent: "space-between",
+    padding: "10px",
+    marginTop: "100px",
   },
-  list: {
-    maxHeight: "100%",
-    overflow: "auto",
+  getItemButtonContainer: {
+    marginTop: "250px",
+    marginLeft: "300px",
+    textAlign: "center",
   },
-  user: {
-    borderRadius: "100px",
+  getItemButton: {
+    borderRadius: "150px",
+  },
+  chartContainer: {
+    width: "70%",
+  },
+  bottomRowContainer: {
+    display: "flex",
+    justifyContent: "center",
+    padding: "10px",
+    marginTop: "100px",
+  },
+  totalSpentContainer: {
+    fontSize: "28px",
+  },
+  largeOrdersContainer: {
+    fontSize: "28px",
+    marginLeft: "200px"
   },
 });
 
 function AnalyticsPage() {
   const classes = useStyles();
   const navigate = useNavigate();
-  
-  const [maxPricePurchases, setMaxPricePurchases] = React.useState([]);
-  const [currentUser, setCurrentUser] = useState("");
 
-  useEffect(() => {
+  const [currentUser, setCurrentUser] = useState("");
+  const [currentUserId, setCurrentUserId] = useState(-1);
+  const [userTotalSpent, setUserTotalSpent] = useState(0);
+  const [userLargeOrders, setUserLargeOrders] = useState(0);
+
+  // CHANGE THIS when you add dropdown for item selection
+  const [selectedItemId, setSelectedItemId] = useState(3843); // Default value 3843
+  const [itemPriceHistory, setItemPriceHistory] = useState([]);
+
+  useEffect(async () => {
     if (window.sessionStorage.getItem("currentUser") === null) {
       navigate("/login");
     } else {
-      setCurrentUser(window.sessionStorage.getItem("currentUser"));
+      var userEmail = window.sessionStorage.getItem("currentUser");
+      var userId;
+      setCurrentUser(userEmail);
+      console.log(userEmail);
 
-      getMaxPricePurchases().then((tempArray) => {
-        console.log(tempArray.message);
-        setMaxPricePurchases(tempArray.message);
+      await getUserID(userEmail).then((data) => {
+        if (data.status === 200) {
+          userId = data.message["user_id"];
+          setCurrentUserId(userId);
+        }
+      });
+
+      console.log(userId);
+
+      await getUserTotalSpent(userId).then((data) => {
+        if (data.status === 200) {
+          setUserTotalSpent(data.message);
+        }
+      });
+
+      await getUserLargeOrders(userId).then((data) => {
+        if (data.status === 200) {
+          setUserLargeOrders(data.message);
+        }
       });
     }
   }, []);
 
+  const handleGetItemButtonPressed = () => {
+    getItemPriceHistory(selectedItemId).then((data) => {
+      if (data.status === 200) {
+        setItemPriceHistory(data.message);
+      }
+    });
+  };
+
   return (
-    <div className={classes.root}>
-      <p>These are some items bought by users at their peak selling price.</p>
-      <Card>
-        <List>
-          <ListItem>
-            <ListItemText primary="Item Id" />
-            <ListItemText primary="Price" />
-            <ListItemText primary="User Id" />
-          </ListItem>
-        </List>
-        <CardContent>
-          <List>
-            <Paper style={{ textAlign: "-webkit-center", overflow: "auto" }}>
-              {maxPricePurchases.map((item) => (
-                <ListItem className={classes.list}>
-                  <ListItemText primary={item.item_id} />
-                  <ListItemText primary={item.price} />
-                  <ListItemText primary={item.user_id} />
-                </ListItem>
-              ))}
-            </Paper>
-          </List>
-        </CardContent>
-      </Card>
+    <div>
+      <Typography className={classes.root}>Analytics</Typography>
+
+      <div className={classes.midRowContainer}>
+        <div className={classes.getItemButtonContainer}>
+          <Button
+            className={classes.getItemButton}
+            variant="outlined"
+            onClick={handleGetItemButtonPressed}
+          >
+            Get Item
+          </Button>
+        </div>
+
+        <div className={classes.chartContainer}>
+          <PriceLineChart data={itemPriceHistory} />
+        </div>
+      </div>
+
+      <div className={classes.bottomRowContainer}>
+        <Typography className={classes.totalSpentContainer}>Total Spent: {userTotalSpent}</Typography>
+        <Typography className={classes.largeOrdersContainer}>Large Orders: {userLargeOrders}</Typography>
+      </div>
     </div>
   );
 }

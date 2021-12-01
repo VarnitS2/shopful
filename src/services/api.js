@@ -117,6 +117,14 @@ async function getPastOrdersBetween(start_date, end_date, user_id) {
   return await response.json();
 }
 
+async function getReccomendation(item_id) {
+  const response = await fetch(
+    `/api/get-items-frequently-bought-together`,
+    requestOptions("POST", { item_id })
+  );
+  return await response.json();
+}
+
 export {
   getItems,
   getMarkets,
@@ -129,4 +137,5 @@ export {
   deleteOrder,
   getFrequentItemsBought,
   getPastOrdersBetween,
+  getReccomendation,
 };

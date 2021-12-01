@@ -15,6 +15,7 @@ import {
   getItems,
   postNewPurchase,
   getFrequentItemsBought,
+  getReccomendation,
 } from "../services/api";
 import { makeStyles } from "@material-ui/core";
 
@@ -42,6 +43,7 @@ function AddItemPage(props) {
   const [freqList, setFreqList] = useState([]);
   const [price, setPrice] = useState();
   const [quantity, setQuantity] = useState();
+  const [recommendedItem, setrecommendedItem] = useState();
 
   const handleItemSelection = (e, val) => {
     if (val) {
@@ -73,11 +75,28 @@ function AddItemPage(props) {
       console.log(tempArray.message);
       setFreqList(tempArray.message);
     });
+    console.log(props.lastItem);
+    if (props.lastItem.item_id > 0) {
+      await getReccomendation(props.lastItem.item_id).then((tempObj) => {
+        setrecommendedItem(tempObj.message);
+        console.log(tempObj.message);
+      });
+    }
   }, []);
 
   return (
     <div className={classes.root}>
-      <h1>ADD ITEM</h1>
+      <h2>ADD ITEM</h2>
+
+      {recommendedItem ? (
+        <div>
+          <Typography style={{ textSize: "20px", color: "gray" }}>
+            Because you picked {props.lastItem.item_name.split(":")[0]} we
+            recommend:{" "}
+          </Typography>
+          <Typography variant="h6">{recommendedItem.item_name} </Typography>
+        </div>
+      ) : null}
 
       <div className={classes.dateContainer}>
         <Typography variant="h6">Search for an item:</Typography>

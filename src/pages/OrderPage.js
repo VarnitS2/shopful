@@ -195,7 +195,15 @@ function OrderPage() {
           aria-describedby="modal-modal-description"
         >
           <Box className={classes.modal}>
-            <AddItemPage orderid={orderId} onClick={handleClose} />
+            <AddItemPage
+              orderid={orderId}
+              lastItem={
+                purchasesList.length > 0
+                  ? purchasesList[purchasesList.length - 1]
+                  : -1
+              }
+              onClick={handleClose}
+            />
           </Box>
         </Modal>
       </div>

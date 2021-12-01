@@ -18,6 +18,12 @@ const useStyles = makeStyles({
     padding: "30px",
     alignItems: "center",
   },
+  root2: {
+    display: "flex",
+    width: "100%",
+    padding: "30px",
+    justifyContent: "center",
+  },
 });
 
 function PastOrdersPage() {
@@ -101,8 +107,14 @@ function PastOrdersPage() {
         </Button>
       </div>
       {orderList ? (
-        <div className={classes.root}>
-          <Grid>
+        <div className={classes.root2}>
+          <Grid
+            style={{
+              display: "grid",
+              gridAutoFlow: "column",
+              columnGap: "20px",
+            }}
+          >
             {orderList.map((item) => (
               <OrderItem
                 order_id={item.order_id}

@@ -9,6 +9,7 @@ import {
   ListItemText,
   Autocomplete,
   Box,
+  Card,
   Modal,
 } from "@mui/material";
 import PurchaseItem from "../components/PurchaseItem";
@@ -34,11 +35,14 @@ const useStyles = makeStyles({
     alignContent: "space-evenly",
     flexDirection: "column",
     padding: "30px",
+    height: "100vh",
+    fontFamily: "BlinkMacSystemFont",
   },
   dateContainer: {
     display: "flex",
     justifyContent: "space-evenly",
     float: "left",
+    marginBottom: "24px",
   },
   modal: {
     position: "absolute",
@@ -99,10 +103,11 @@ function OrderPage() {
       orderDate.toISOString().split("T")[0] +
       " " +
       orderDate.toTimeString().split(" ")[0];
-
-    updateOrder(orderId, formattedDate, marketId, notes, total).then(() =>
-      navigate(`/homepage`)
-    );
+    if (formattedDate && marketId && total) {
+      updateOrder(orderId, formattedDate, marketId, notes, total).then(() =>
+        navigate(`/homepage`)
+      );
+    }
   };
 
   const goBack = () => {
@@ -138,19 +143,48 @@ function OrderPage() {
     <div className={classes.root}>
       <h1>NEW ORDER: {orderId.toString()} </h1>
 
-      <Grid>
-        <Typography variant="h6">Purchases</Typography>
-        <List>
-          <ListItem>
-            <ListItemText primary="Item Id" />
-            <ListItemText primary="Price" />
-            <ListItemText primary="Quantity" />
-          </ListItem>
-          {purchasesList.map((item) => (
-            <PurchaseItem itemObj={item} />
-          ))}
-        </List>
-      </Grid>
+      <div className={classes.dateContainer}>
+        <Typography style={{ alignSelf: "flex-end" }} variant="h6">
+          Pick a Date:
+        </Typography>
+        <MuiPickersUtilsProvider utils={DateFnsUtils}>
+          <KeyboardDatePicker
+            style={{ flexDirection: "row" }}
+            value={orderDate}
+            onChange={handleDateChange}
+          />
+        </MuiPickersUtilsProvider>
+
+        <Typography style={{ alignSelf: "flex-end" }} variant="h6">
+          Pick a Market:
+        </Typography>
+        <Autocomplete
+          disablePortal
+          id="combo-box-demo"
+          options={marketList}
+          val={marketName}
+          sx={{ width: 300 }}
+          onChange={handleMarketSelection}
+          getOptionLabel={(option) => option.market_name}
+          renderInput={(params) => <TextField {...params} label="Market" />}
+        />
+      </div>
+
+      <Card>
+        <Grid>
+          <Typography variant="h6">Purchases</Typography>
+          <List style={{ textAlignLast: "center" }}>
+            <ListItem>
+              <ListItemText primary="Item Id" />
+              <ListItemText primary="Price" />
+              <ListItemText primary="Quantity" />
+            </ListItem>
+            {purchasesList.map((item) => (
+              <PurchaseItem itemObj={item} />
+            ))}
+          </List>
+        </Grid>
+      </Card>
 
       <div>
         <Button onClick={handleOpen}>Add Item</Button>
@@ -167,25 +201,6 @@ function OrderPage() {
       </div>
 
       <Typography variant="h6">Total: ${total} </Typography>
-
-      <div className={classes.dateContainer}>
-        <Typography variant="h6">Pick a Date:</Typography>
-        <MuiPickersUtilsProvider utils={DateFnsUtils}>
-          <KeyboardDatePicker value={orderDate} onChange={handleDateChange} />
-        </MuiPickersUtilsProvider>
-
-        <Typography variant="h6">Pick a Market:</Typography>
-        <Autocomplete
-          disablePortal
-          id="combo-box-demo"
-          options={marketList}
-          val={marketName}
-          sx={{ width: 300 }}
-          onChange={handleMarketSelection}
-          getOptionLabel={(option) => option.market_name}
-          renderInput={(params) => <TextField {...params} label="Market" />}
-        />
-      </div>
 
       <TextField
         id="outlined"

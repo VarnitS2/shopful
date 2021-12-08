@@ -127,6 +127,7 @@ function PastOrdersPage() {
                 order_id={item.order_id}
                 order_date={item.purchase_date}
                 order_total={item.total_spent}
+                callback={createPastList}
               />
             ))}
           </Grid>

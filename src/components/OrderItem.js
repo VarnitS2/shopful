@@ -13,7 +13,8 @@ import {
   Paper,
 } from "@mui/material";
 import { makeStyles } from "@material-ui/core";
-import { getPurchases } from "../services/api";
+import { useNavigate } from "react-router-dom";
+import { getPurchases, deleteOrder } from "../services/api";
 
 const useStyles = makeStyles({
   root: {
@@ -34,6 +35,7 @@ const useStyles = makeStyles({
 
 function OrderItem(props) {
   const classes = useStyles();
+  const navigate = useNavigate();
   const [purchasesList, setPurchasesList] = React.useState([]);
 
   //TODO: Implement functionality to add the Purchase items in a list
@@ -42,6 +44,10 @@ function OrderItem(props) {
   //     setPurchasesList(tempArray.message)
   //   );
   // }, [props.order_id]);
+
+  const deleteThisOrder = () => {
+    deleteOrder(props.order_id).then(() => props.callback());
+  };
   return (
     <Card className={classes.root}>
       <CardHeader
@@ -72,7 +78,9 @@ function OrderItem(props) {
         <Typography>Total: {props.order_total}</Typography>
       </CardContent>
       <CardActions>
-        <Button size="small">Delete Order</Button>
+        <Button onClick={deleteThisOrder} size="small">
+          Delete Order
+        </Button>
       </CardActions>
     </Card>
   );
